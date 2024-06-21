@@ -76,78 +76,49 @@ const client = new ChatCompletion({ QIANFAN_AK: 'your_api_key', QIANFAN_SK: 'you
 功能如下：
 ### Chat 单轮对话
 ```bash
-// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
 
+import {ChatCompletion} from "@baiducloud/qianfan";
 const client = new  ChatCompletion();
+
+
 async function main() {
     const resp = await client.chat({
         messages: [
             {
-                role: 'user',
-                content: '你好！',
+                role: "user",
+                content: "今天深圳天气",
             },
         ],
-    });
-    console.log(resp);
+    }, "ERNIE-Bot-turbo");
 }
 
 main();
+
+
 ```
 
-### 指定支持预置服务的模型
+### 返回流式结果
 ```bash
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
-
-const client = new  ChatCompletion();
 async function main() {
-    const resp = await client.chat({
-        messages: [
-            {
-                role: 'user',
-                content: '你好！',
-            },
-        ],
-    }, 'ERNIE-Bot-turbo');
-    console.log(resp);
+    const stream =  await client.chat({
+          messages: [
+              {
+                  role: "user",
+                  content: "等额本金和等额本息有什么区别？"
+              },
+          ],
+          stream: true,
+      }, "ERNIE-Bot-turbo");
+      for await (const chunk of stream as AsyncIterableIterator<any>) {
+           // 返回结果
+        }
 }
-
-main();
 ```
-### 用户自行发布的模型服务
-```bash
-import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
-// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
-
-const client = new  ChatCompletion({Endpoint: '***'});
-async function main() {
-    const resp = await client.chat({
-        messages: [
-            {
-                role: 'user',
-                content: '你好',
-            },
-        ],
-    });
-    console.log(resp);
-}
-
-main();
-```
 ### 多轮对话
 ```bash
 
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
-
-// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
-
 const client = new  ChatCompletion();  
 async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
     const resp = await client.chat({
@@ -209,11 +180,6 @@ main();
 
 ```bash
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
-
-// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
-
 const client = new  ChatCompletion();
 async function main() {
     const stream = await client.chat({
@@ -710,10 +676,6 @@ const client = new Reranker();
 
 // 手动传 AK/SK
 // const client = new Reranker({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Reranker} from "@baiducloud/qianfan";
-const client = Reranker({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
 async function main() {
      const resp = await client.reranker({
