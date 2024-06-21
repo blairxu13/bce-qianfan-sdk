@@ -73,7 +73,7 @@ const client = new ChatCompletion({ QIANFAN_AK: 'your_api_key', QIANFAN_SK: 'you
 ```
 
 ## 第四步：使用SDK
-
+功能如下：
 ### Chat 单轮对话
 ```bash
 // 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
@@ -699,3 +699,65 @@ main();
 
 
 The image portray s a black and white portrait of a beautiful young woman . She is wearing a red hat, giving her  a hat -like appearance. The black and white nature of the photograph enhances the visual appeal and adds depth to the image .
+
+### Reranker 重排序
+
+```bash
+// node环境
+import {Reranker} from "@baiducloud/qianfan";
+// 直接读取 env  
+const client = new Reranker();
+
+// 手动传 AK/SK
+// const client = new Reranker({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
+
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+import {Reranker} from "@baiducloud/qianfan";
+const client = Reranker({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+
+async function main() {
+     const resp = await client.reranker({
+        query: '上海天气',
+        documents: ['上海气候', '北京美食'],
+    });
+}
+
+main();
+
+```
+### HTML 中使用, 引入 dist 文件中的 bundle.iife.js 即可使用，参考example/index.html
+```bash
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Qianfan SDK</h1>
+    <script src="../dist/bundle.iife.js"></script>
+    <script>
+        const {ChatCompletion} = QianfanSDK;
+        const client =  new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.178.105:8002', QIANFAN_CONSOLE_API_BASE_URL: ' http://172.18.178.105:8003'})
+     async function main() {
+    const stream =  await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '等额本金和等额本息有什么区别？',
+            },
+        ],
+        stream: true,
+    }, 'ERNIE-Bot-turbo');
+    console.log('流式返回结果');
+    for await (const chunk of stream) {
+        console.log(chunk);
+    }
+}
+
+main();
+    </script>
+</body>
+</html>
+```
