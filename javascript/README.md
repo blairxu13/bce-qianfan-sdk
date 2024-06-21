@@ -25,226 +25,610 @@
 [ticket-image]: https://img.shields.io/badge/%E8%81%94%E7%B3%BB%E6%88%91%E4%BB%AC-%E7%99%BE%E5%BA%A6%E6%99%BA%E8%83%BD%E4%BA%91%E5%B7%A5%E5%8D%95-brightgreen
 [ticket-url]: https://console.bce.baidu.com/ticket/#/ticket/create?productId=279
 
-## 如何安装
+## 第一步：安装node.js sdk
 
 ```bash
+#如果使用npm：
 npm install @baiducloud/qianfan
-# or
+#如果使用yarn：
 yarn add @baiducloud/qianfan
 ```
 
-## 快速使用
+## 第二步：获得鉴权
 
-### 鉴权
+### 选择一：使用安全认证AK/SK鉴权   【推荐】
+1）登录百度智能云千帆控制台
+登录百度智能云千帆控制台，点击“用户账号->安全认证”进入Access Key管理界面。
+（2）查看安全认证页面的Access Key/Secret Key
+注意：
+初始化鉴权时，使用“安全认证/Access Key”中的Access Key和 Secret Key进行鉴权，更多鉴权认证机制请参考鉴权认证机制。
+安全认证Access Key(AK)/Secret Key(SK)，和使用的获取AcessToken的应用API Key(AK) 和 Secret Key(SK)不同
 
-在使用千帆 SDK 之前，用户需要 [百度智能云控制台 - 安全认证](https://console.bce.baidu.com/iam/#/iam/accesslist) 页面获取 Access Key 与 Secret Key，并在 [千帆控制台](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application) 中创建应用，选择需要启用的服务，具体流程参见平台 [说明文档](https://cloud.baidu.com/doc/Reference/s/9jwvz2egb)。
+### 使用应用AK/SK鉴权调用 【不推荐，后续可能出现新功能不兼容的情况】
+（1）登录百度智能云千帆控制台。
+注意：为保障服务稳定运行，账户最好不处于欠费状态。
+（2）创建千帆应用。
+如果已有应用，此步骤可跳过。如果无应用，进入控制台创建应用 ，如何创建应用也可以参考应用接入使用。
+（3）在应用接入页，获取应用的API Key、Secret Key。
 
-SDK 支持从当前目录的 .env 中读取配置，也可以修改环境变量 QIANFAN_ACCESS_KEY 和 QIANFAN_SECRET_KEY ，同时支持初始化手动传入 AK/SK 。
-
-浏览器使用不需要鉴权，连接proxy使用，方法如下：
-
-1. 需要先安装python>=3.8
-2. pip install qianfan
-3. qianfan proxy
-在执行qianfan proxy的同级目录下，新建 .env文件，设置 QIANFAN_ACCESS_KEY 和 QIANFAN_SECRET_KEY 即可
-
-注意：在Vue或react项目中集成使用时，需确保webpack为4以下，如果5以上版本需要根据提示配置polyfills，在后续的迭代中会逐步优化。
-
-注意访问地址，需要修改为proxy的ip地址，否则会跨域
-
-![proxy](../docs/imgs/proxy.png)
-
-#### env 读取
-
-##### env 文件示例
-
-在你项目的根目录中创建一个名为 .env 的文件，并添加以下内容：
-
-```dotenv
-QIANFAN_AK=your_access_key
+## 第三步：初始化AK和SK
+### 选择一：通过配置文件初始化
+在项目的根目录中创建一个名为 .env 的文件，并添加以下内容，SDK从当前目录的 .env 中读取配置。
+```bash
+QIANFAN_AK=your_api_key
 QIANFAN_SK=your_secret_key
-QIANFAN_ACCESS_KEY=another_access_key
-QIANFAN_SECRET_KEY=another_secret_key
 ```
-
-#### 修改 env 的配置 （仅 node可使用）
-
-```ts
-import {setEnvVariable} from "@baiducloud/qianfan";
-setEnvVariable('QIANFAN_AK','***');
-setEnvVariable('QIANFAN_SK','***');
- ```
-
-#### 初始化手动传入 AK/SK
-
-```ts
-// 手动传 AK/SK 
-const client = new ChatCompletion({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-// 手动传 ACCESS_KEY / SECRET_KEY
-const client = new ChatCompletion({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
-
+### 选择二：通过环境变量初始化 【推荐】
+```bash
+import{setEnvVariable}from"@baiducloud/qianfan";
+setEnvVariable('QIANFAN_AK','your_api_key');
+setEnvVariable('QIANFAN_SK','your_secret_key');
 ```
-
-### Chat 对话
-
-可以使用 `ChatCompletion` 对象完成对话相关操作
-
-```ts
-// node 环境
+### 选择三：通过参数初始化
+```bash
 import {ChatCompletion} from "@baiducloud/qianfan";
 
-// 直接读取 env
+// 通过参数初始化，应用API Key替换your_api_key，应用Secret Key替换your_secret_key，以对话Chat为例，调用如下
+const client = new ChatCompletion({ QIANFAN_AK: 'your_api_key', QIANFAN_SK: 'your_secret_key' });
+```
+
+## 第四步：使用SDK
+
+### Chat 单轮对话
+```bash
+// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
+
 const client = new  ChatCompletion();
-// 手动传 AK/SK 
-// const client = new ChatCompletion({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {ChatCompletion} from "@baiducloud/qianfan";
-const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
 async function main() {
     const resp = await client.chat({
         messages: [
             {
-                role: "user",
-                content: "今天深圳天气",
+                role: 'user',
+                content: '你好！',
             },
         ],
-    }, "ERNIE-Bot-turbo");
+    });
+    console.log(resp);
+}
+
+main();
+```
+
+### 指定支持预置服务的模型
+```bash
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
+
+const client = new  ChatCompletion();
+async function main() {
+    const resp = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好！',
+            },
+        ],
+    }, 'ERNIE-Bot-turbo');
+    console.log(resp);
+}
+
+main();
+```
+### 用户自行发布的模型服务
+```bash
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
+// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
+
+const client = new  ChatCompletion({Endpoint: '***'});
+async function main() {
+    const resp = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好',
+            },
+        ],
+    });
+    console.log(resp);
+}
+
+main();
+```
+### 多轮对话
+```bash
+
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
+// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
+
+const client = new  ChatCompletion();  
+async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
+    const resp = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好！',
+            },
+            {
+                 role: "assistant",
+                 content: "你好，请问有什么我可以帮助你的吗？"
+             },
+             {
+                 role: "user",
+                 "content": "我在北京，周末可以去哪里玩？"
+             },
+        ],
+    });
+    console.log(resp);
+}
+
+main();
+```
+### 返回事例
+```bash
+
+{
+  id: 'as-8vcq0n4u0e',
+  object: 'chat.completion',
+  created: 1709887877,
+  result: '北京是一个拥有许多有趣和独特景点的大城市，周末你可以去很多地方玩。例如：
+' +
+    '
+' +
+    '1. **故宫博物院**：这是中国最大的古代建筑群，有着丰富的历史和文化遗产，是个很好的适合全家人游玩的地方。
+' +
+    '2. **天安门广场**：这里是北京的心脏，周围有许多历史和现代建筑。你可以在广场上漫步，欣赏升旗仪式和观看周围的繁华景象。
+' +
+    '3. **颐和园**：这是一个美丽的皇家园林，有着优美的湖泊和精美的古建筑。你可以在这里漫步，欣赏美丽的景色，同时也可以了解中国的传统文化。
+' +
+    '4. **北京动物园**：这是中国最大的动物园之一，有许多稀有动物，包括熊猫、老虎、长颈鹿等。对于孩子们来说是个很好的去处。
+' +
+    '5. **798艺术区**：这是一个充满艺术气息的地方，有许多画廊、艺术工作室和艺术展览。这里有许多新的现代艺术作品，可以欣赏到一些艺术家的创作。
+' +
+    '6. **三里屯酒吧街**：如果你对夜生活感兴趣，可以去三里屯酒吧街。这里有许多酒吧和餐馆，是一个热闹的夜生活场所。
+' +
+    '7. **北京环球度假区**：如果你们喜欢主题公园，那么可以去环球度假区，虽然这是在建的，但是等它建好之后肯定是一个很好的去处。
+' +
+    '
+' +
+    '当然，你也可以考虑一些其他的地方，比如购物街、博物馆、公园等等。希望这些建议对你有所帮助！',
+  is_truncated: false,
+  need_clear_history: false,
+  usage: { prompt_tokens: 19, completion_tokens: 307, total_tokens: 326 }
+}
+```
+
+### 流式输出：调用事例
+
+```bash
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
+// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
+
+const client = new  ChatCompletion();
+async function main() {
+    const stream = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好！',
+            },
+        ],
+        stream: true,   //启用流式返回
+    });
+      for await (const chunk of stream as AsyncIterableIterator<any>) {
+        console.log(chunk);
+    }
 }
 
 main();
 
 ```
 
-参数传入 stream 为 `true` 时，返回流式结果
+### 流式输出：返回示例
 
-```ts
-// 流式 测试
-async function main() {
-    const stream =  await client.chat({
-          messages: [
-              {
-                  role: "user",
-                  content: "等额本金和等额本息有什么区别？"
-              },
-          ],
-          stream: true,
-      }, "ERNIE-Bot-turbo");
-      for await (const chunk of stream as AsyncIterableIterator<any>) {
-           // 返回结果
-        }
+```bash
+
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 0,
+  is_end: false,
+  is_truncated: false,
+  result: '你好！',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
+}
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 1,
+  is_end: false,
+  is_truncated: false,
+  result: '有什么我可以帮助你的吗？',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
+}
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 2,
+  is_end: true,
+  is_truncated: false,
+  result: '',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
 }
 ```
+### 续写Completions
+千帆 SDK 支持调用续写Completions相关API，支持非流式、流式调用。
 
-### Completion 续写
+#### 非流式
 
-对于不需要对话，仅需要根据 prompt 进行补全的场景来说，用户可以使用 `Completions` 来完成这一任务。
+```bash
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 
-```ts
-// node环境
-import {Completions} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Completions();
-
-// 手动传 AK/SK
-// const client = new Completions({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Completions} from "@baiducloud/qianfan";
-const client = Completions({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
+const client = new Completions({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
 async function main() {
     const resp = await client.completions({
-        prompt: 'Introduce the city Beijing',
-    }, "SQLCoder-7B");
+        prompt: 'In Bash, how do I list all text files in the current directory (excluding subdirectories) that have been modified in the last month',
+    }, 'CodeLlama-7b-Instruct');
+    console.log(resp);
 }
 
 main();
 ```
+#### 非流式-返回示例
+```bash
 
-参数传入 stream 为 `true` 时，返回流式结果
+{
+    id: 'as-4teyam0huy',
+  object: 'chat.completion',
+  created: 1718782862,
+  result: 'To list all text files in the current directory (excluding subdirectories) that have been modified in the last month, you can use the following command:
+' +
+    '```
+' +
+    'find . -type f -name "*.txt" -mtime -1
+' +
+    '```
+' +
+    'Explanation:
+' +
+    '
+' +
+    '* `.` represents the current directory.
+' +
+    '* `-type f` specifies that we are looking for files.
+' +
+    '* `-name "*.txt"` specifies that we are looking for files with the ".txt" extension.
+' +
+    '* `-mtime -1` specifies that we are looking for files that have been modified in the last month.
+' +
+    '
+' +
+    'Note: The `-mtime` option is a GNU extension, and may not be available on all systems. If you are using a different operating system, you may need to use a different command to achieve the same result.',
+  is_safe: 1,
+  usage: { prompt_tokens: 29, completion_tokens: 158, total_tokens: 187 }
+}
+```
+#### 流式
 
-```ts
-// 流式 
+```bash
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new Completions({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
 async function main() {
-    const stream =  await client.completions({
-        prompt: 'Introduce the city Beijing',
-        stream: true,
-      }, "SQLCoder-7B");
-      for await (const chunk of stream as AsyncIterableIterator<any>) {
-          // 返回结果
-        }
+    const stream = await client.completions({
+        prompt: 'In Bash, how do I list all text files in the current directory (excluding subdirectories) that have been modified in the last month',
+        stream: true,   //启用流式返回
+    }, 'CodeLlama-7b-Instruct');
+     for await (const chunk of stream as AsyncIterableIterator<any>) {
+        console.log(chunk);
+    }
 }
+
 main();
 ```
+#### 流式-返回示例
 
-### Embedding 向量化
+```bash
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782182,
+	'sentence_id': 0,
+	'is_end': False,
+	'result': 'To list all text files in the current directory (excluding subdirectories) that have been modified in the last month in Bash, you can use the',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 32,
+		'total_tokens': 61
+	}
+} 
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782183,
+	'sentence_id': 1,
+	'is_end': False,
+	'result': ' following command:
 
-千帆 SDK 同样支持调用千帆大模型平台中的模型，将输入文本转化为用浮点数表示的向量形式。转化得到的语义向量可应用于文本检索、信息推荐、知识挖掘等场景。
+find . -type f -name "*.txt" -mtime -1
 
-```ts
-// node环境
-import {Eembedding} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Eembedding();
+Here's how the command works',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 22,
+		'total_tokens': 83
+	}
+} 
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782184,
+	'sentence_id': 2,
+	'is_end': False,
+	'result': ':
 
-// 手动传 AK/SK 测试
-// const client = new Eembedding({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
+* `find`: The find command is used to search for files based on various criteria.
+* `.`: The current directory is specified using the',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 29,
+		'total_tokens': 112
+	}
+} 
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782185,
+	'sentence_id': 3,
+	'is_end': False,
+	'result': ' `.` notation.
+* `-type f`: This option tells find to search for files (not directories).
+* `-name "*.txt"`: This',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 27,
+		'total_tokens': 139
+	}
+}
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782186,
+	'sentence_id': 4,
+	'is_end': False,
+	'result': ' option tells find to search for files with the .txt extension.
+* `-mtime -1`: This option tells find to search for files that have been',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 32,
+		'total_tokens': 171
+	}
+}
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782187,
+	'sentence_id': 5,
+	'is_end': False,
+	'result': ' modified in the last month. The `-mtime` option is used to specify the modification time, and the `-1` option tells find to search for files',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 35,
+		'total_tokens': 206
+	}
+} 
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782188,
+	'sentence_id': 6,
+	'is_end': False,
+	'result': ' that have been modified in the last day.
 
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Eembedding} from "@baiducloud/qianfan";
-const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+You can also use the `-mtime +1` option to search for files that have been modified in',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 33,
+		'total_tokens': 239
+	}
+}
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782189,
+	'sentence_id': 7,
+	'is_end': False,
+	'result': ' the last 2 days, or the `-mtime +2` option to search for files that have been modified in the last 3 days, and so',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 32,
+		'total_tokens': 271
+	}
+} 
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782190,
+	'sentence_id': 8,
+	'is_end': False,
+	'result': ' on.
 
+Note that the `-mtime` option only works for files that have a modification time that is less than or equal to the current time.',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 33,
+		'total_tokens': 304
+	}
+}
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782191,
+	'sentence_id': 9,
+	'is_end': False,
+	'result': ' If you want to search for files that have been modified in the last month, you can use the `-mtime -1` option. If you want to',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 35,
+		'total_tokens': 339
+	}
+} 
+{
+	'id': 'as-wjs702ndui',
+	'object': 'completion',
+	'created': 1718782192,
+	'sentence_id': 10,
+	'is_end': True,
+	'result': ' search for files that have been modified in the last 2 months, you can use the `-mtime -2` option, and so on.',
+	'is_safe': 1,
+	'usage': {
+		'prompt_tokens': 29,
+		'completion_tokens': 29,
+		'total_tokens': 368
+	}
+}
+```
+
+### 向量Embeddings
+
+#### 默认模型调用
+```bash
+import {Embedding} from "@baiducloud/qianfan";
+
+const client = new Embedding({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
 async function main() {
     const resp = await client.embedding({
-        input: [ 'Introduce the city Beijing'],
-    }, "Embedding-V1");
+        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+    });
+    const rs = resp.data;
+    rs.forEach((data) => {
+        console.log(data.embedding);
+    })
+}
+
+main();
+```
+#### 默认模型调用-返回示例
+
+```bash
+[0.06814255565404892,  0.007878394797444344,  0.060368239879608154, ...]
+[0.13463851809501648,  -0.010635783895850182,   0.024348173290491104, ...]
+```
+
+#### 指定支持预置服务的模型
+
+```bash
+import {Embedding} from "@baiducloud/qianfan";
+
+const client = new Embedding({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
+async function main() {
+    const resp = await client.embedding({
+        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+    }, 'Embedding-V1');
+    const rs = resp.data;
+    rs.forEach((data) => {
+        console.log(data.embedding);
+    })
 }
 
 main();
 ```
 
-### 图像
+#### 指定支持预置服务的模型--返回示例
 
-#### 文生图
+```bash
 
-根据用户输入的文本生成图片。
 
-模型支持列表
-    Stable-Diffusion-XL
+[0.06814255565404892,  0.007878394797444344,  0.060368239879608154, ...]
+[0.13463851809501648,  -0.010635783895850182,   0.024348173290491104, ...]
 
-```ts
-// node环境
+main();
+```
+
+### 图像-Images
+
+#### 指定支持预置服务的模型
+```bash
 import * as http from 'http';
-import {Text2Image} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Text2Image();
-// 手动传 AK/SK 测试
-// const client = new Text2Image({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
+import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
+// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
 
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Text2Image} from "@baiducloud/qianfan";
-const client = Text2Image({QIANFAN_BASE_URL: '***', QIANFAN_CONSOLE_API_BASE_URL: '***'});
+const client = new Text2Image();
 
 async function main() {
     const resp = await client.text2Image({
-        prompt: '生成爱莎公主的图片',
-        size: '768x768',
-        n: 1,
-        steps: 20,
-        sampler_index: 'Euler a',
-    }, 'Stable-Diffusion-XL');
+        prompt: 'A Ragdoll cat with a bowtie.',
+    });
 
     const base64Image = resp.data[0].b64_image;
-    // 注意 base64Image没有带ata:image/jpeg;base64 前缀，要直接使用的话，需要加上
     // 创建一个简单的服务器
     const server = http.createServer((req, res) => {
         res.writeHead(200, {'Content-Type': 'text/html'});
         let html = `<html><body><img src="data:image/jpeg;base64,${base64Image}" /><br/></body></html>`;
         res.end(html);
     });
-    const port = 3001;
+
+    const port = 3002;
+    server.listen(port, () => {
+        console.log(`服务器运行在 http://localhost:${port}`);
+    });
+}
+
+main();
+```
+#### 指定支持预置服务的模型
+
+```bash
+import * as http from 'http';
+import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
+// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
+
+const client = new Text2Image();
+
+async function main() {
+    const resp = await client.text2Image({
+        prompt: 'A Ragdoll cat with a bowtie.',
+     }, 'Stable-Diffusion-XL');
+
+    const base64Image = resp.data[0].b64_image;
+    // 创建一个简单的服务器
+    const server = http.createServer((req, res) => {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        let html = `<html><body><img src="data:image/jpeg;base64,${base64Image}" /><br/></body></html>`;
+        res.end(html);
+    });
+
+    const port = 3002;
     server.listen(port, () => {
         console.log(`服务器运行在 http://localhost:${port}`);
     });
@@ -253,271 +637,65 @@ async function main() {
 main();
 ```
 
-#### 图生文
+#### 用户自行发布的模型服务
+```bash
 
-多模态图像理解模型，可以支持多样的图像分辨率，回答图形图表有关问题
-注意事项：调用本文API，推荐使用安全认证AK/SK鉴权，调用流程及鉴权介绍详见SDK安装及使用流程
+import * as http from 'http';
+import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
+// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
+setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
 
-```ts
-// node 环境
-import {Image2Text} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Image2Text({Endpoint: '***'});
-
-// 手动传 AK/SK 测试
-// const client = new Image2Text({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Image2Text} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+const client = new Text2Image();
 
 async function main() {
-    const resp = await client.image2Text({
-        prompt: '分析一下图片画了什么',
-        image: '图片的base64编码',
+    const resp = await client.text2Image({
+        prompt: 'A Ragdoll cat with a bowtie.',
+     }, 'Stable-Diffusion-XL');
+
+    const base64Image = resp.data[0].b64_image;
+    // 创建一个简单的服务器
+    const server = http.createServer((req, res) => {
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        let html = `<html><body><img src="data:image/jpeg;base64,${base64Image}" /><br/></body></html>`;
+        res.end(html);
+    });
+
+    const port = 3002;
+    server.listen(port, () => {
+        console.log(`服务器运行在 http://localhost:${port}`);
     });
 }
 
 main();
-
 ```
 
-```ts
-// node环境
+### Fuyu-8B
+#### 调用示例
+```bash
+
+import {setEnvVariable} from '@baiducloud/qianfan'
 import {Image2Text} from "@baiducloud/qianfan";
-// 直接读取 env 
-// 使用预置服务Fuyu-8B
+
+// 使用安全认证AK/SK鉴权，通过环境变量方式初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+setEnvVariable('QIANFAN_AK','your_iam_ak');
+setEnvVariable('QIANFAN_SK','your_iam_sk');
+
+// 调用大模型
 const client = new Image2Text();
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Image2Text} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
-// 手动传 AK/SK 测试
-// const client = new Image2Text({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
 async function main() {
     const resp = await client.image2Text({
         prompt: '分析一下图片画了什么',
-        image: '图片的base64编码',
-    });
-}
-
-main();
-
-```
-
-### Plugin 插件
-
-SDK支持使用平台插件能力，以帮助用户快速构建 LLM 应用或将 LLM 应用到自建程序中。支持知识库、智慧图问、天气等插件。
-
-#### 千帆插件
-
-```ts
-// node环境
-import {Plugin} from "@baiducloud/qianfan";
-// 注意：千帆插件需要传入Endpoint， 一言插件不用
-const client = new Plugin({Endpoint: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Plugin} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
-// 天气插件
-async function main() {
-    const resp = await client.plugins({
-        query: '深圳今天天气如何',
-        /** 
-         *  插件名称
-         * 知识库插件固定值为["uuid-zhishiku"] 
-         * 智慧图问插件固定值为["uuid-chatocr"]
-         * 天气插件固定值为["uuid-weatherforecast"]
-         */ 
-        plugins: [
-            'uuid-weatherforecast',
-        ],
-    });
-}
-
-// 智慧图问
-async function chatocrMain() {
-    const resp = await client.plugins({
-        query: '请解析这张图片, 告诉我怎么画这张图的简笔画',
-        plugins: [
-            'uuid-chatocr',
-        ],
-        fileurl: 'https://xxx.bcebos.com/xxx/xxx.jpeg',
-    });
-}
-
-// 知识库
-async function zhishikuMain() {
-    const reps = await client.plugins({
-        query: '你好什么时候飞行员需要负法律责任？',
-        plugins: [
-            'uuid-zhishiku',
-        ],
-    });
-}
-
-main();
-
-// chatocrMain();
-
-// zhishikuMain();
-```
-
-参数传入 stream 为 `true` 时，返回流式结果
-
-```ts
-// node环境
-import {Plugin} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Plugin();
-
-// 手动传 AK/SK 测试
-// const client = new Plugins({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Plugin} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
-async function main() {
-    const stream = await client.plugins({
-        query: '深圳今天天气如何',
-        /** 
-         *  插件名称
-         * 知识库插件固定值为["uuid-zhishiku"] 
-         * 智慧图问插件固定值为["uuid-chatocr"]
-         * 天气插件固定值为["uuid-weatherforecast"]
-         */ 
-        plugins: [
-            'uuid-weatherforecast',
-        ],
-        stream: true,
-    });
-    for await (const chunk of stream as AsyncIterableIterator<any>) {
-        // 返回结果
-    }
+        image: 'iVBORw0KGgoAAAANSUhEUgAAB4IAAxxxxxxxxxxxx=',  //  请替换图片的base64编码
+    },'Fuyu-8B'
+);
+    console.log(resp.result)
 }
 
 main();
 ```
 
-#### 一言插件 API-V2
+#### 返回示例
 
-* 说图解画（ImageAI）：基于图片进行文字创作、回答问题，帮你写文案、想故事、图生图。暂仅支持10MB以内的图片。
-* 览卷文档（ChatFile）：原ChatFile，可基于文档完成摘要、问答、创作等任务，仅支持10MB以内文档，不支持扫描件。
-* E言易图（eChart）：基于Apache Echarts为您提供数据洞察和图表制作，目前支持柱状图、折线图、饼图、雷达图、散点图、漏斗图、思维导图（树图）。
 
-eChart插件
-
-```ts
-// eChart插件
-async function yiYaneChartMain() {
-    const resp = await client.plugins({
-        messages: [
-            {
-                "role": "user",
-                "content": "帮我画一个饼状图：8月的用户反馈中，BUG有100条，需求有100条，使用咨询100条，总共300条反馈"
-            }
-        ],
-        plugins: ["eChart"],
-    });
-}
-
-yiYaneChartMain() 
-
-// ImageAI插件测试
-async function yiYanImageAIMain() {
-    const resp = await client.plugins({
-        messages: [
-            {
-                "role": "user",
-                "content": "<img>cow.jpeg</img><url>https://xxx/xxx/xxx.jpeg</url> 这张图片当中都有啥"
-            }
-        ],
-        plugins: ["ImageAI"],
-    });
-}
-
-yiYanImageAIMain()
-
-// ChatFile测试
-async function yiYanChatFileMain() {
-    const resp = await client.plugins({
-        messages: [
-            {'role': 'user', 'content': '<file>浅谈牛奶的营养与消费趋势.docx</file><url>https://xxx/xxx/xxx.docx</url>'},
-            // eslint-disable-next-line max-len
-            {'role': 'assistant', 'content': '以下是该文档的关键内容：\n牛奶作为一种营养丰富、易消化吸收的天然食品，受到广泛欢迎。其价值主要表现在营养成分和医学价值两个方面。在营养成分方面，牛奶含有多种必需的营养成分，如脂肪、蛋白质、乳糖、矿物质和水分等，比例适中，易于消化吸收。在医学价值方面，牛奶具有促进生长发育、维持健康水平的作用，对于儿童长高也有积极影响。此外，牛奶还具有极高的市场前景，消费者关注度持续上升，消费心理和市场需求也在不断变化。为了更好地发挥牛奶的营养价值，我们应该注意健康饮用牛奶的方式，适量饮用，并根据自身情况选择合适的牛奶产品。综上所述，牛奶作为一种理想的天然食品，不仅具有丰富的营养成分，还具有极高的医学价值和市场前景。我们应该充分认识牛奶的价值，科学饮用，让牛奶为我们的健康发挥更大的作用。'},
-            {'role': 'user', 'content': '牛奶的营养成本有哪些'},
-        ],
-        plugins: ['ChatFile']
-    });
-}
-yiYanChatFileMain();
-```
-
-### Reranker 重排序
-
-跨语种语义表征算法模型，擅长优化语义搜索结果和语义相关顺序精排，支持中英日韩四门语言。
-
-```ts
-// node环境
-import {Reranker} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Reranker();
-
-// 手动传 AK/SK
-// const client = new Reranker({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Reranker} from "@baiducloud/qianfan";
-const client = Reranker({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
-async function main() {
-     const resp = await client.reranker({
-        query: '上海天气',
-        documents: ['上海气候', '北京美食'],
-    });
-}
-
-main();
-```
-
-### HTML 中使用, 引入 dist 文件中的 bundle.iife.js 即可使用，参考example/index.html
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Qianfan SDK</h1>
-    <script src="../dist/bundle.iife.js"></script>
-    <script>
-        const {ChatCompletion} = QianfanSDK;
-        const client =  new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.178.105:8002', QIANFAN_CONSOLE_API_BASE_URL: ' http://172.18.178.105:8003'})
-     async function main() {
-    const stream =  await client.chat({
-        messages: [
-            {
-                role: 'user',
-                content: '等额本金和等额本息有什么区别？',
-            },
-        ],
-        stream: true,
-    }, 'ERNIE-Bot-turbo');
-    console.log('流式返回结果');
-    for await (const chunk of stream) {
-        console.log(chunk);
-    }
-}
-
-main();
-    </script>
-</body>
-</html>
-```
+The image portray s a black and white portrait of a beautiful young woman . She is wearing a red hat, giving her  a hat -like appearance. The black and white nature of the photograph enhances the visual appeal and adds depth to the image .
