@@ -34,22 +34,16 @@ npm install @baiducloud/qianfan
 yarn add @baiducloud/qianfan
 ```
 
-## 第二步：获得鉴权
+## 第二步：连接proxy
+浏览器使用不需要鉴权，连接proxy使用，方法如下：
 
-### 选择一：使用安全认证AK/SK鉴权   【推荐】
-1）登录百度智能云千帆控制台
-登录百度智能云千帆控制台，点击“用户账号->安全认证”进入Access Key管理界面。
-（2）查看安全认证页面的Access Key/Secret Key
-注意：
-初始化鉴权时，使用“安全认证/Access Key”中的Access Key和 Secret Key进行鉴权，更多鉴权认证机制请参考鉴权认证机制。
-安全认证Access Key(AK)/Secret Key(SK)，和使用的获取AcessToken的应用API Key(AK) 和 Secret Key(SK)不同
+1. 需要先安装python>=3.8
+2. pip install qianfan
+3. qianfan proxy 在执行qianfan proxy的同级目录下，新建 .env文件，设置 QIANFAN_ACCESS_KEY 和 QIANFAN_SECRET_KEY 即可
+注意：在Vue或react项目中集成使用时，需确保webpack为4以下，如果5以上版本需要根据提示配置polyfills，在后续的迭代中会逐步优化。
 
-### 使用应用AK/SK鉴权调用 【不推荐，后续可能出现新功能不兼容的情况】
-（1）登录百度智能云千帆控制台。
-注意：为保障服务稳定运行，账户最好不处于欠费状态。
-（2）创建千帆应用。
-如果已有应用，此步骤可跳过。如果无应用，进入控制台创建应用 ，如何创建应用也可以参考应用接入使用。
-（3）在应用接入页，获取应用的API Key、Secret Key。
+注意访问地址，需要修改为proxy的ip地址，否则会跨域
+
 
 ## 第三步：初始化AK和SK
 ### 选择一：通过配置文件初始化
@@ -58,25 +52,12 @@ yarn add @baiducloud/qianfan
 QIANFAN_AK=your_api_key
 QIANFAN_SK=your_secret_key
 ```
-### 选择二：通过环境变量初始化 【推荐】
-```bash
-import{setEnvVariable}from"@baiducloud/qianfan";
-setEnvVariable('QIANFAN_AK','your_api_key');
-setEnvVariable('QIANFAN_SK','your_secret_key');
-```
-### 选择三：通过参数初始化
-```bash
-import {ChatCompletion} from "@baiducloud/qianfan";
-
-// 通过参数初始化，应用API Key替换your_api_key，应用Secret Key替换your_secret_key，以对话Chat为例，调用如下
-const client = new ChatCompletion({ QIANFAN_AK: 'your_api_key', QIANFAN_SK: 'your_secret_key' });
-```
 
 ## 第四步：使用SDK
 功能如下：
 ### Chat 单轮对话
 ```bash
-
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 import {ChatCompletion} from "@baiducloud/qianfan";
 const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -96,26 +77,12 @@ main();
 
 ```
 
-### 返回流式结果
-```bash
-async function main() {
-    const stream =  await client.chat({
-          messages: [
-              {
-                  role: "user",
-                  content: "等额本金和等额本息有什么区别？"
-              },
-          ],
-          stream: true,
-      }, "ERNIE-Bot-turbo");
-      for await (const chunk of stream as AsyncIterableIterator<any>) {
-           // 返回结果
-        }
-}
-```
+
+
 
 ### 多轮对话
 ```bash
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， // //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -178,6 +145,8 @@ main();
 ### 流式输出：调用事例
 
 ```bash
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， // //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+
 const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const stream = await client.chat({
@@ -242,6 +211,8 @@ main();
 #### 非流式
 
 ```bash
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， // //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+
 import {Completions} from "@baiducloud/qianfan";
 const client = Completions({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -278,7 +249,7 @@ main();
 
 
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 import {Eembedding} from "@baiducloud/qianfan";
 const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -297,6 +268,8 @@ main();
 文生图
 
 ```bash
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+
 import {Text2Image} from "@baiducloud/qianfan";
 const client = Text2Image({QIANFAN_BASE_URL: '***', QIANFAN_CONSOLE_API_BASE_URL: '***'});
 
@@ -329,6 +302,8 @@ main();
 ```bash
 
 import {Image2Text} from "@baiducloud/qianfan";
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+
 const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
 async function main() {
@@ -344,6 +319,7 @@ main();
 ### Plugin 插件
 千帆插件
 ```bash
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），  //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 import {Plugin} from "@baiducloud/qianfan";
 const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
@@ -396,6 +372,7 @@ main();
 ### Reranker 重排序
 
 ```bash
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 import {Reranker} from "@baiducloud/qianfan";
 const client = Reranker({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
