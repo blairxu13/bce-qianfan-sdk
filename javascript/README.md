@@ -458,7 +458,7 @@ async function main() {
 
 main();
 ```
-用户自行发布的模型服务
+
 #### 用户自行发布的模型服务
 ```bash
 import {Completions, setEnvVariable} from "@baiducloud/qianfan";
