@@ -44,7 +44,7 @@ yarn add @baiducloud/qianfan
 初始化鉴权时，使用“安全认证/Access Key”中的Access Key和 Secret Key进行鉴权，更多鉴权认证机制请参考鉴权认证机制。
 安全认证Access Key(AK)/Secret Key(SK)，和使用的获取AcessToken的应用API Key(AK) 和 Secret Key(SK)不同
 
-### 使用应用AK/SK鉴权调用 【不推荐，后续可能出现新功能不兼容的情况】
+### 选择二：使用应用AK/SK鉴权调用 【不推荐，后续可能出现新功能不兼容的情况】
 （1）登录百度智能云千帆控制台。
 注意：为保障服务稳定运行，账户最好不处于欠费状态。
 （2）创建千帆应用。
@@ -77,10 +77,7 @@ const client = new ChatCompletion({ QIANFAN_AK: 'your_api_key', QIANFAN_SK: 'you
 ### Chat 单轮对话
 ```bash
 
-
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
-
-
 const client = new  ChatCompletion();
 async function main() {
     const resp = await client.chat({
@@ -116,7 +113,6 @@ main();
 ```bash
 
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
-
 const client = new  ChatCompletion();  
 async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
     const resp = await client.chat({
@@ -140,7 +136,7 @@ async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
 
 main();
 ```
-### 返回事例
+### 返回示例
 ```bash
 
 {
@@ -251,13 +247,90 @@ main();
 [0.06814255565404892,  0.007878394797444344,  0.060368239879608154, ...]
 [0.13463851809501648,  -0.010635783895850182,   0.024348173290491104, ...]
 ```
+#### 指定模型 
+Embedding-V1
+```bash
+#请求示例
+import {Eembedding} from "@baiducloud/qianfan";
+
+const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const resp = await client.embedding({
+        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+    }, 'Embedding-V1');
+    const data = resp.data[0] as any;
+    console.log(data.embedding);
+}
+
+main();
+#响应示例
+[0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
+```
+bge-large-zh
+```bash
+#请求示例
+import {Eembedding} from "@baiducloud/qianfan";
+
+const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const resp = await client.embedding({
+        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+    }, 'bge-large-zh');
+    const data = resp.data[0] as any;
+    console.log(data.embedding);
+}
+
+main();
+
+#响应示例
+[0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
+```
+bge-large-en
+```bash
+#请求示例
+import {Eembedding} from "@baiducloud/qianfan";
+
+const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const resp = await client.embedding({
+        input: ['recommend some food for me, please','Tell me a fairy tale'],
+    }, 'bge-large-en');
+    const data = resp.data[0] as any;
+    console.log(data.embedding);
+}
+
+main();
+
+#响应示例
+[0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
+```
+tao-8k
+```bash
+#请求示例
+import {Eembedding} from "@baiducloud/qianfan";
+
+const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const resp = await client.embedding({
+        input: ['介绍下你自己吧'],
+    }, 'tao-8k');
+    const data = resp.data[0] as any;
+    console.log(data.embedding);
+}
+
+main();
+
+#响应示例
+[0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
+
+```
 ### 图像-Images
 
 #### 文生图
 ```bash
 import * as http from 'http';
 import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
-const client = new Text2Image();
+const client = new Text2Image({Endpoint：‘***’});
 
 async function main() {
     const resp = await client.text2Image({
@@ -348,6 +421,53 @@ main();
 // chatocrMain();
 
 // zhishikuMain();
+```
+
+一言插件 API-V2
+```bash
+// eChart插件
+async function yiYaneChartMain() {
+    const resp = await client.plugins({
+        messages: [
+            {
+                "role": "user",
+                "content": "帮我画一个饼状图：8月的用户反馈中，BUG有100条，需求有100条，使用咨询100条，总共300条反馈"
+            }
+        ],
+        plugins: ["eChart"],
+    });
+}
+
+yiYaneChartMain() 
+
+// ImageAI插件测试
+async function yiYanImageAIMain() {
+    const resp = await client.plugins({
+        messages: [
+            {
+                "role": "user",
+                "content": "<img>cow.jpeg</img><url>https://xxx/xxx/xxx.jpeg</url> 这张图片当中都有啥"
+            }
+        ],
+        plugins: ["ImageAI"],
+    });
+}
+
+yiYanImageAIMain()
+
+// ChatFile测试
+async function yiYanChatFileMain() {
+    const resp = await client.plugins({
+        messages: [
+            {'role': 'user', 'content': '<file>浅谈牛奶的营养与消费趋势.docx</file><url>https://xxx/xxx/xxx.docx</url>'},
+            // eslint-disable-next-line max-len
+            {'role': 'assistant', 'content': '以下是该文档的关键内容：\n牛奶作为一种营养丰富、易消化吸收的天然食品，受到广泛欢迎。其价值主要表现在营养成分和医学价值两个方面。在营养成分方面，牛奶含有多种必需的营养成分，如脂肪、蛋白质、乳糖、矿物质和水分等，比例适中，易于消化吸收。在医学价值方面，牛奶具有促进生长发育、维持健康水平的作用，对于儿童长高也有积极影响。此外，牛奶还具有极高的市场前景，消费者关注度持续上升，消费心理和市场需求也在不断变化。为了更好地发挥牛奶的营养价值，我们应该注意健康饮用牛奶的方式，适量饮用，并根据自身情况选择合适的牛奶产品。综上所述，牛奶作为一种理想的天然食品，不仅具有丰富的营养成分，还具有极高的医学价值和市场前景。我们应该充分认识牛奶的价值，科学饮用，让牛奶为我们的健康发挥更大的作用。'},
+            {'role': 'user', 'content': '牛奶的营养成本有哪些'},
+        ],
+        plugins: ['ChatFile']
+    });
+}
+yiYanChatFileMain();
 ```
 
 ### Reranker 重排序
