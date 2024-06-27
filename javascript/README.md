@@ -37,7 +37,7 @@ yarn add @baiducloud/qianfan
 ## 第二步：获得鉴权
 
 ### 选择一：使用安全认证AK/SK鉴权   【推荐】
-1）登录百度智能云千帆控制台
+(1）登录百度智能云千帆控制台
 登录百度智能云千帆控制台，点击“用户账号->安全认证”进入Access Key管理界面。
 （2）查看安全认证页面的Access Key/Secret Key
 注意：
@@ -223,7 +223,7 @@ main();
 ```
 
 ### 向量Embeddings
-
+千帆 SDK 同样支持调用千帆大模型平台中的模型，将输入文本转化为用浮点数表示的向量形式。转化得到的语义向量可应用于文本检索、信息推荐、知识挖掘等场景。
 #### 默认模型调用
 ```bash
 import {Embedding} from "@baiducloud/qianfan";
@@ -241,7 +241,7 @@ async function main() {
 
 main();
 ```
-#### 默认模型调用-返回示例
+#### 返回示例
 
 ```bash
 [0.06814255565404892,  0.007878394797444344,  0.060368239879608154, ...]
@@ -373,6 +373,7 @@ main();
 ```
 ### Plugin 插件
 千帆插件
+SDK支持使用平台插件能力，以帮助用户快速构建 LLM 应用或将 LLM 应用到自建程序中。支持知识库、智慧图问、天气等插件。
 ```bash
 // node环境
 import {Plugin} from "@baiducloud/qianfan";
@@ -424,6 +425,10 @@ main();
 ```
 
 一言插件 API-V2
+说图解画（ImageAI）：基于图片进行文字创作、回答问题，帮你写文案、想故事、图生图。暂仅支持10MB以内的图片。
+览卷文档（ChatFile）：原ChatFile，可基于文档完成摘要、问答、创作等任务，仅支持10MB以内文档，不支持扫描件。
+E言易图（eChart）：基于Apache Echarts为您提供数据洞察和图表制作，目前支持柱状图、折线图、饼图、雷达图、散点图、漏斗图、思维导图（树图）。
+
 ```bash
 // eChart插件
 async function yiYaneChartMain() {
@@ -471,7 +476,7 @@ yiYanChatFileMain();
 ```
 
 ### Reranker 重排序
-
+跨语种语义表征算法模型，擅长优化语义搜索结果和语义相关顺序精排，支持中英日韩四门语言。
 ```bash
 // node环境
 import {Reranker} from "@baiducloud/qianfan";
