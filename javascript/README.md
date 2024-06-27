@@ -86,8 +86,89 @@ main();
   usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
 }
 ```
+### 指定预置模型
+```bash
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
+setEnvVariable('QIANFAN_ACCESS_KEY','***');
+setEnvVariable('QIANFAN_SECRET_KEY','***');
 
+const client = new  ChatCompletion({Endpoint: '***'});
+async function main() {
+    const resp = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '今天深圳天气',
+            },
+        ],
+    });
+    console.log(resp);
+}
+
+main();
+```
+### 流式输出-调用示例
+```bash
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
+setEnvVariable('QIANFAN_ACCESS_KEY','***');
+setEnvVariable('QIANFAN_SECRET_KEY','***');
+
+const client = new  ChatCompletion();
+async function main() {
+    const stream = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好！',
+            },
+        ],
+        stream: true,   //启用流式返回
+    });
+      for await (const chunk of stream as AsyncIterableIterator<any>) {
+        console.log(chunk);
+    }
+}
+
+main();
+```
+### 流式输出-响应示例
+```bash
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 0,
+  is_end: false,
+  is_truncated: false,
+  result: '你好！',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
+}
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 1,
+  is_end: false,
+  is_truncated: false,
+  result: '有什么我可以帮助你的吗？',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
+}
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 2,
+  is_end: true,
+  is_truncated: false,
+  result: '',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
+}
+```
 
 ### 多轮对话
 ```bash
@@ -150,6 +231,144 @@ main();
   usage: { prompt_tokens: 19, completion_tokens: 307, total_tokens: 326 }
 }
 ```
+#### ChatLaw Go相关
+##### 单轮
+```bash
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/baidubce/bce-qianfan-sdk/go/qianfan"
+)
+
+func main() {
+    // 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+	os.Setenv("QIANFAN_ACCESS_KEY", "your_iam_ak")
+	os.Setenv("QIANFAN_SECRET_KEY", "your_iam_sk")
+    
+    // 指定特定模型
+	chat := qianfan.NewChatCompletion(
+		qianfan.WithModel("ChatLaw"),
+	)
+    request := qianfan.ChatCompletionRequest{
+        Messages: []qianfan.ChatCompletionMessage{
+            qianfan.ChatCompletionUserMessage("你好！"),
+        },
+    }
+    request.SetExtra(map[string]interface{}{
+            "extra_parameters": map[string]interface{}{
+            "use_keyword":   false,
+            "use_reference": false,
+        },
+    })
+	resp, _ := chat.Do(
+		context.TODO(),
+		&request,
+	)
+	fmt.Println(resp.Result)
+}
+
+如果开车的人故意驾驶汽车撞向人群，但是没有造成重大损失，这可能违反了道路交通法规。根据《中华人民共和国刑法》规定，故意以驾车的方式撞人或者车辆，情节比较轻的，有可能受到三年以下的有期徒刑或者拘留的处罚。具体的处罚需要根据具体情况、情节轻重等因素进行综合考虑，并需要法院或行政机关的裁决。
+```
+##### 多轮
+```bash
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+
+    "github.com/baidubce/bce-qianfan-sdk/go/qianfan"
+)
+
+func main() {
+    // 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+    os.Setenv("QIANFAN_ACCESS_KEY", "your_iam_ak")
+    os.Setenv("QIANFAN_SECRET_KEY", "your_iam_sk")
+    
+    // 指定特定模型
+    chat := qianfan.NewChatCompletion(
+        qianfan.WithModel("ChatLaw"),
+    )
+    request := qianfan.ChatCompletionRequest{
+        Messages: []qianfan.ChatCompletionMessage{
+            qianfan.ChatCompletionUserMessage("你好！"),
+            qianfan.ChatCompletionAssistantMessage("你好！有什么我可以帮助你的吗？"),
+            qianfan.ChatCompletionUserMessage("我在北京，周末可以去哪里玩？"),
+        },
+    }
+    request.SetExtra(map[string]interface{}{
+            "extra_parameters": map[string]interface{}{
+            "use_keyword":   false,
+            "use_reference": false,
+        },
+    })
+    resp, _ := chat.Do(
+        context.TODO(),
+        &request,
+    )
+    fmt.Println(resp.Result)
+}
+
+如果司机处于醉酒驾车状态，则属于醉酒驾车，属于危险驾驶行为之一，根据道路交通安全法及刑法规定，醉酒驾车属于危险驾驶行为，将被处罚，如果造成后果，将被判刑和罚款。
+```
+##### 流式
+```bash
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+
+	"github.com/baidubce/bce-qianfan-sdk/go/qianfan"
+)
+
+func main() {
+	// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
+	os.Setenv("QIANFAN_ACCESS_KEY", "your_iam_ak")
+	os.Setenv("QIANFAN_SECRET_KEY", "your_iam_sk")
+
+	// 指定特定模型
+	chat := qianfan.NewChatCompletion(
+		qianfan.WithModel("ChatLaw"),
+	)
+	request := qianfan.ChatCompletionRequest{
+		Messages: []qianfan.ChatCompletionMessage{
+			qianfan.ChatCompletionUserMessage("你好！"),
+		},
+	}
+	request.SetExtra(map[string]interface{}{
+		"extra_parameters": map[string]interface{}{
+			"use_keyword":   false,
+			"use_reference": false,
+		},
+	})
+	resp, _ := chat.Stream(
+		context.TODO(),
+		&request,
+	)
+	for {
+		r, err := resp.Recv()
+		if err != nil {
+			panic(err)
+		}
+		if resp.IsEnd { // 判断是否结束
+			break
+		}
+		fmt.Println(r.Result)
+	}
+}
+
+根据中国
+《刑法》的规定，危险驾驶的情节较轻的，可以判处拘役或者罚金，情节特别轻微或者有其他可以从轻处罚情节的，可以免于
+处罚。
+因此，如果一个人没有造成重大损失，可能会被处以拘役或者罚金。
+```
 ### 续写Completions
 千帆 SDK 支持调用续写Completions相关API，支持非流式、流式调用。
 
@@ -201,7 +420,104 @@ main();
   usage: { prompt_tokens: 29, completion_tokens: 158, total_tokens: 187 }
 }
 ```
+#### 指定模型
+```bash
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 
+const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const resp = await client.completions({
+        prompt: '你好',
+    }, 'ERNIE-Bot');
+    console.log(resp);
+}
+
+main();
+```
+
+#### 用户自行发布的模型服务
+```bash
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***', Endpoint: '***' });
+async function main() {
+    const resp = await client.completions({
+        prompt: '你好，你是谁',
+    });
+    console.log(resp);
+}
+
+main();
+```
+#### 返回示例
+```bash
+{
+  id: 'as-hfmv5mvdim',
+  object: 'chat.completion',
+  created: 1709779789,
+  result: '你好！请问有什么我可以帮助你的吗？无论你有什么问题或需要帮助，我都会尽力回答和提供支持。请随时告诉我你的需求，我会尽快回复你。',
+  is_truncated: false,
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 34, total_tokens: 35 }
+}
+```
+#### 流式-调用示例
+```bash
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const stream = await client.completions({
+        prompt: '你好，你是谁',
+        stream: true,   //启用流式返回
+    });
+     for await (const chunk of stream as AsyncIterableIterator<any>) {
+        console.log(chunk);
+    }
+}
+
+main();
+```
+#### 流式-输出示例
+```bash
+{
+  id: 'as-cck51r1rfw',
+  object: 'chat.completion',
+  created: 1709779938,
+  sentence_id: 0,
+  is_end: false,
+  is_truncated: false,
+  result: '你好！',
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
+}
+{
+  id: 'as-cck51r1rfw',
+  object: 'chat.completion',
+  created: 1709779938,
+  sentence_id: 1,
+  is_end: false,
+  is_truncated: false,
+  result: '请问有什么可以帮助你的吗？',
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
+}
+{
+  id: 'as-cck51r1rfw',
+  object: 'chat.completion',
+  created: 1709779938,
+  sentence_id: 2,
+  is_end: true,
+  is_truncated: false,
+  result: '',
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 8, total_tokens: 9 }
+}
+```
 
 ### 向量Embeddings
 千帆 SDK 同样支持调用千帆大模型平台中的模型，将输入文本转化为用浮点数表示的向量形式。转化得到的语义向量可应用于文本检索、信息推荐、知识挖掘等场景。
