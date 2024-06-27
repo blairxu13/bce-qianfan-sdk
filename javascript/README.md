@@ -61,18 +61,31 @@ async function main() {
     const resp = await client.chat({
         messages: [
             {
-                role: "user",
-                content: "今天深圳天气",
+                role: 'user',
+                content: '你好！',
             },
         ],
-    }, "ERNIE-Bot-turbo");
+    });
+    console.log(resp);
 }
 
 main();
 
-
 ```
 
+### 返回流式结果
+```bash
+
+{
+  id: 'as-xdiknr8pj9',
+  object: 'chat.completion',
+  created: 1709721393,
+  result: '你好！有什么我可以帮助你的吗？',
+  is_truncated: false,
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
+}
+```
 
 
 
