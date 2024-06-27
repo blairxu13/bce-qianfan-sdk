@@ -137,8 +137,57 @@ main();
   usage: { prompt_tokens: 19, completion_tokens: 307, total_tokens: 326 }
 }
 ```
+### 续写Completions
+千帆 SDK 支持调用续写Completions相关API，支持非流式、流式调用。
 
 
+```bash
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new Completions({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
+async function main() {
+    const resp = await client.completions({
+        prompt: 'In Bash, how do I list all text files in the current directory (excluding subdirectories) that have been modified in the last month',
+    }, 'CodeLlama-7b-Instruct');
+    console.log(resp);
+}
+
+main();
+```
+#### 返回示例
+```bash
+
+{
+    id: 'as-4teyam0huy',
+  object: 'chat.completion',
+  created: 1718782862,
+  result: 'To list all text files in the current directory (excluding subdirectories) that have been modified in the last month, you can use the following command:
+' +
+    '```
+' +
+    'find . -type f -name "*.txt" -mtime -1
+' +
+    '```
+' +
+    'Explanation:
+' +
+    '
+' +
+    '* `.` represents the current directory.
+' +
+    '* `-type f` specifies that we are looking for files.
+' +
+    '* `-name "*.txt"` specifies that we are looking for files with the ".txt" extension.
+' +
+    '* `-mtime -1` specifies that we are looking for files that have been modified in the last month.
+' +
+    '
+' +
+    'Note: The `-mtime` option is a GNU extension, and may not be available on all systems. If you are using a different operating system, you may need to use a different command to achieve the same result.',
+  is_safe: 1,
+  usage: { prompt_tokens: 29, completion_tokens: 158, total_tokens: 187 }
+}
+```
 
 
 ### 向量Embeddings
