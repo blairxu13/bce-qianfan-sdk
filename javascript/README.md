@@ -249,8 +249,9 @@ main();
 ```
 #### 指定模型 
 Embedding-V1
+#### 请求示例
 ```bash
-#请求示例
+
 import {Eembedding} from "@baiducloud/qianfan";
 
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
@@ -263,12 +264,14 @@ async function main() {
 }
 
 main();
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 ```
 bge-large-zh
+#### 请求示例
 ```bash
-#请求示例
 import {Eembedding} from "@baiducloud/qianfan";
 
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
@@ -281,13 +284,14 @@ async function main() {
 }
 
 main();
-
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 ```
 bge-large-en
+#### 请求示例
 ```bash
-#请求示例
 import {Eembedding} from "@baiducloud/qianfan";
 
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
@@ -300,13 +304,14 @@ async function main() {
 }
 
 main();
-
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 ```
 tao-8k
+#### 请求示例
 ```bash
-#请求示例
 import {Eembedding} from "@baiducloud/qianfan";
 
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
@@ -319,8 +324,9 @@ async function main() {
 }
 
 main();
-
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 
 ```
