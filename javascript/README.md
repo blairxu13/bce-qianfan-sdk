@@ -104,7 +104,7 @@ async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
 
 main();
 ```
-### 返回事例
+### 返回示例
 ```bash
 
 {
