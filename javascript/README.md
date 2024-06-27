@@ -298,6 +298,57 @@ async function main() {
 
 main();
 ```
+### Plugin 插件
+千帆插件
+```bash
+// node环境
+import {Plugin} from "@baiducloud/qianfan";
+// 注意：千帆插件需要传入Endpoint， 一言插件不用
+const client = new Plugin({Endpoint: '***'});
+
+// 天气插件
+async function main() {
+    const resp = await client.plugins({
+        query: '深圳今天天气如何',
+        /** 
+         *  插件名称
+         * 知识库插件固定值为["uuid-zhishiku"] 
+         * 智慧图问插件固定值为["uuid-chatocr"]
+         * 天气插件固定值为["uuid-weatherforecast"]
+         */ 
+        plugins: [
+            'uuid-weatherforecast',
+        ],
+    });
+}
+
+// 智慧图问
+async function chatocrMain() {
+    const resp = await client.plugins({
+        query: '请解析这张图片, 告诉我怎么画这张图的简笔画',
+        plugins: [
+            'uuid-chatocr',
+        ],
+        fileurl: 'https://xxx.bcebos.com/xxx/xxx.jpeg',
+    });
+}
+
+// 知识库
+async function zhishikuMain() {
+    const reps = await client.plugins({
+        query: '你好什么时候飞行员需要负法律责任？',
+        plugins: [
+            'uuid-zhishiku',
+        ],
+    });
+}
+
+main();
+
+// chatocrMain();
+
+// zhishikuMain();
+```
 
 ### Reranker 重排序
 
