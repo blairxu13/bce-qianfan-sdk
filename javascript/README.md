@@ -77,41 +77,38 @@ const client = new ChatCompletion({ QIANFAN_AK: 'your_api_key', QIANFAN_SK: 'you
 ### Chat 单轮对话
 ```bash
 
-import {ChatCompletion} from "@baiducloud/qianfan";
+
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
+
 const client = new  ChatCompletion();
-
-
 async function main() {
     const resp = await client.chat({
         messages: [
             {
-                role: "user",
-                content: "今天深圳天气",
+                role: 'user',
+                content: '你好！',
             },
         ],
-    }, "ERNIE-Bot-turbo");
+    });
+    console.log(resp);
 }
 
 main();
-
 
 ```
 
 ### 返回流式结果
 ```bash
-async function main() {
-    const stream =  await client.chat({
-          messages: [
-              {
-                  role: "user",
-                  content: "等额本金和等额本息有什么区别？"
-              },
-          ],
-          stream: true,
-      }, "ERNIE-Bot-turbo");
-      for await (const chunk of stream as AsyncIterableIterator<any>) {
-           // 返回结果
-        }
+
+{
+  id: 'as-xdiknr8pj9',
+  object: 'chat.completion',
+  created: 1709721393,
+  result: '你好！有什么我可以帮助你的吗？',
+  is_truncated: false,
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
 }
 ```
 
@@ -119,6 +116,7 @@ async function main() {
 ```bash
 
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
 const client = new  ChatCompletion();  
 async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
     const resp = await client.chat({
@@ -176,72 +174,9 @@ main();
 }
 ```
 
-### 流式输出：调用事例
-
-```bash
-import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
-const client = new  ChatCompletion();
-async function main() {
-    const stream = await client.chat({
-        messages: [
-            {
-                role: 'user',
-                content: '你好！',
-            },
-        ],
-        stream: true,   //启用流式返回
-    });
-      for await (const chunk of stream as AsyncIterableIterator<any>) {
-        console.log(chunk);
-    }
-}
-
-main();
-
-```
-
-### 流式输出：返回示例
-
-```bash
-
-{
-  id: 'as-f7mrqpanb3',
-  object: 'chat.completion',
-  created: 1709724132,
-  sentence_id: 0,
-  is_end: false,
-  is_truncated: false,
-  result: '你好！',
-  need_clear_history: false,
-  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
-}
-{
-  id: 'as-f7mrqpanb3',
-  object: 'chat.completion',
-  created: 1709724132,
-  sentence_id: 1,
-  is_end: false,
-  is_truncated: false,
-  result: '有什么我可以帮助你的吗？',
-  need_clear_history: false,
-  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
-}
-{
-  id: 'as-f7mrqpanb3',
-  object: 'chat.completion',
-  created: 1709724132,
-  sentence_id: 2,
-  is_end: true,
-  is_truncated: false,
-  result: '',
-  need_clear_history: false,
-  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
-}
-```
 ### 续写Completions
 千帆 SDK 支持调用续写Completions相关API，支持非流式、流式调用。
 
-#### 非流式
 
 ```bash
 import {Completions, setEnvVariable} from "@baiducloud/qianfan";
@@ -256,7 +191,7 @@ async function main() {
 
 main();
 ```
-#### 非流式-返回示例
+#### 返回示例
 ```bash
 
 {
@@ -290,196 +225,6 @@ main();
   usage: { prompt_tokens: 29, completion_tokens: 158, total_tokens: 187 }
 }
 ```
-#### 流式
-
-```bash
-import {Completions, setEnvVariable} from "@baiducloud/qianfan";
-
-const client = new Completions({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
-async function main() {
-    const stream = await client.completions({
-        prompt: 'In Bash, how do I list all text files in the current directory (excluding subdirectories) that have been modified in the last month',
-        stream: true,   //启用流式返回
-    }, 'CodeLlama-7b-Instruct');
-     for await (const chunk of stream as AsyncIterableIterator<any>) {
-        console.log(chunk);
-    }
-}
-
-main();
-```
-#### 流式-返回示例
-
-```bash
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782182,
-	'sentence_id': 0,
-	'is_end': False,
-	'result': 'To list all text files in the current directory (excluding subdirectories) that have been modified in the last month in Bash, you can use the',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 32,
-		'total_tokens': 61
-	}
-} 
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782183,
-	'sentence_id': 1,
-	'is_end': False,
-	'result': ' following command:
-
-find . -type f -name "*.txt" -mtime -1
-
-Here's how the command works',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 22,
-		'total_tokens': 83
-	}
-} 
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782184,
-	'sentence_id': 2,
-	'is_end': False,
-	'result': ':
-
-* `find`: The find command is used to search for files based on various criteria.
-* `.`: The current directory is specified using the',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 29,
-		'total_tokens': 112
-	}
-} 
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782185,
-	'sentence_id': 3,
-	'is_end': False,
-	'result': ' `.` notation.
-* `-type f`: This option tells find to search for files (not directories).
-* `-name "*.txt"`: This',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 27,
-		'total_tokens': 139
-	}
-}
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782186,
-	'sentence_id': 4,
-	'is_end': False,
-	'result': ' option tells find to search for files with the .txt extension.
-* `-mtime -1`: This option tells find to search for files that have been',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 32,
-		'total_tokens': 171
-	}
-}
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782187,
-	'sentence_id': 5,
-	'is_end': False,
-	'result': ' modified in the last month. The `-mtime` option is used to specify the modification time, and the `-1` option tells find to search for files',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 35,
-		'total_tokens': 206
-	}
-} 
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782188,
-	'sentence_id': 6,
-	'is_end': False,
-	'result': ' that have been modified in the last day.
-
-You can also use the `-mtime +1` option to search for files that have been modified in',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 33,
-		'total_tokens': 239
-	}
-}
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782189,
-	'sentence_id': 7,
-	'is_end': False,
-	'result': ' the last 2 days, or the `-mtime +2` option to search for files that have been modified in the last 3 days, and so',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 32,
-		'total_tokens': 271
-	}
-} 
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782190,
-	'sentence_id': 8,
-	'is_end': False,
-	'result': ' on.
-
-Note that the `-mtime` option only works for files that have a modification time that is less than or equal to the current time.',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 33,
-		'total_tokens': 304
-	}
-}
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782191,
-	'sentence_id': 9,
-	'is_end': False,
-	'result': ' If you want to search for files that have been modified in the last month, you can use the `-mtime -1` option. If you want to',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 35,
-		'total_tokens': 339
-	}
-} 
-{
-	'id': 'as-wjs702ndui',
-	'object': 'completion',
-	'created': 1718782192,
-	'sentence_id': 10,
-	'is_end': True,
-	'result': ' search for files that have been modified in the last 2 months, you can use the `-mtime -2` option, and so on.',
-	'is_safe': 1,
-	'usage': {
-		'prompt_tokens': 29,
-		'completion_tokens': 29,
-		'total_tokens': 368
-	}
-}
-```
 
 ### 向量Embeddings
 
@@ -506,47 +251,12 @@ main();
 [0.06814255565404892,  0.007878394797444344,  0.060368239879608154, ...]
 [0.13463851809501648,  -0.010635783895850182,   0.024348173290491104, ...]
 ```
-
-#### 指定支持预置服务的模型
-
-```bash
-import {Embedding} from "@baiducloud/qianfan";
-
-const client = new Embedding({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
-async function main() {
-    const resp = await client.embedding({
-        input: ['介绍下你自己吧', '你有什么爱好吗？'],
-    }, 'Embedding-V1');
-    const rs = resp.data;
-    rs.forEach((data) => {
-        console.log(data.embedding);
-    })
-}
-
-main();
-```
-
-#### 指定支持预置服务的模型--返回示例
-
-```bash
-
-
-[0.06814255565404892,  0.007878394797444344,  0.060368239879608154, ...]
-[0.13463851809501648,  -0.010635783895850182,   0.024348173290491104, ...]
-
-main();
-```
-
 ### 图像-Images
 
-#### 指定支持预置服务的模型
+#### 文生图
 ```bash
 import * as http from 'http';
 import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
-// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
-
 const client = new Text2Image();
 
 async function main() {
@@ -570,82 +280,10 @@ async function main() {
 
 main();
 ```
-#### 指定支持预置服务的模型
-
+#### 图生文
 ```bash
-import * as http from 'http';
-import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
-// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
-
-const client = new Text2Image();
-
-async function main() {
-    const resp = await client.text2Image({
-        prompt: 'A Ragdoll cat with a bowtie.',
-     }, 'Stable-Diffusion-XL');
-
-    const base64Image = resp.data[0].b64_image;
-    // 创建一个简单的服务器
-    const server = http.createServer((req, res) => {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        let html = `<html><body><img src="data:image/jpeg;base64,${base64Image}" /><br/></body></html>`;
-        res.end(html);
-    });
-
-    const port = 3002;
-    server.listen(port, () => {
-        console.log(`服务器运行在 http://localhost:${port}`);
-    });
-}
-
-main();
-```
-
-#### 用户自行发布的模型服务
-```bash
-
-import * as http from 'http';
-import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
-// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_ACCESS_KEY','your_iam_ak');
-setEnvVariable('QIANFAN_SECRET_KEY','your_iam_sk');
-
-const client = new Text2Image();
-
-async function main() {
-    const resp = await client.text2Image({
-        prompt: 'A Ragdoll cat with a bowtie.',
-     }, 'Stable-Diffusion-XL');
-
-    const base64Image = resp.data[0].b64_image;
-    // 创建一个简单的服务器
-    const server = http.createServer((req, res) => {
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        let html = `<html><body><img src="data:image/jpeg;base64,${base64Image}" /><br/></body></html>`;
-        res.end(html);
-    });
-
-    const port = 3002;
-    server.listen(port, () => {
-        console.log(`服务器运行在 http://localhost:${port}`);
-    });
-}
-
-main();
-```
-
-### Fuyu-8B
-#### 调用示例
-```bash
-
 import {setEnvVariable} from '@baiducloud/qianfan'
 import {Image2Text} from "@baiducloud/qianfan";
-
-// 使用安全认证AK/SK鉴权，通过环境变量方式初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-setEnvVariable('QIANFAN_AK','your_iam_ak');
-setEnvVariable('QIANFAN_SK','your_iam_sk');
 
 // 调用大模型
 const client = new Image2Text();
@@ -660,11 +298,6 @@ async function main() {
 
 main();
 ```
-
-#### 返回示例
-
-
-The image portray s a black and white portrait of a beautiful young woman . She is wearing a red hat, giving her  a hat -like appearance. The black and white nature of the photograph enhances the visual appeal and adds depth to the image .
 
 ### Reranker 重排序
 
@@ -687,39 +320,4 @@ async function main() {
 main();
 
 ```
-### HTML 中使用, 引入 dist 文件中的 bundle.iife.js 即可使用，参考example/index.html
-```bash
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Qianfan SDK</h1>
-    <script src="../dist/bundle.iife.js"></script>
-    <script>
-        const {ChatCompletion} = QianfanSDK;
-        const client =  new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.178.105:8002', QIANFAN_CONSOLE_API_BASE_URL: ' http://172.18.178.105:8003'})
-     async function main() {
-    const stream =  await client.chat({
-        messages: [
-            {
-                role: 'user',
-                content: '等额本金和等额本息有什么区别？',
-            },
-        ],
-        stream: true,
-    }, 'ERNIE-Bot-turbo');
-    console.log('流式返回结果');
-    for await (const chunk of stream) {
-        console.log(chunk);
-    }
-}
 
-main();
-    </script>
-</body>
-</html>
-```
