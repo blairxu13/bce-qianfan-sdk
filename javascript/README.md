@@ -39,10 +39,6 @@ yarn add @baiducloud/qianfan
 
 1. 需要先安装python>=3.8
 2. pip install qianfan
-3. qianfan proxy 在执行qianfan proxy的同级目录下，新建 .env文件，设置 QIANFAN_ACCESS_KEY 和 QIANFAN_SECRET_KEY 即可
-注意：在Vue或react项目中集成使用时，需确保webpack为4以下，如果5以上版本需要根据提示配置polyfills，在后续的迭代中会逐步优化。
-
-注意访问地址，需要修改为proxy的ip地址，否则会跨域
 
 
 ## 第三步：初始化AK和SK
@@ -57,7 +53,7 @@ QIANFAN_SK=your_secret_key
 功能如下：
 ### Chat 单轮对话
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 import {ChatCompletion} from "@baiducloud/qianfan";
 const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -82,7 +78,7 @@ main();
 
 ### 多轮对话
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， // //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -145,7 +141,7 @@ main();
 ### 流式输出：调用事例
 
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， // //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
@@ -211,7 +207,7 @@ main();
 #### 非流式
 
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， // //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 import {Completions} from "@baiducloud/qianfan";
 const client = Completions({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
@@ -249,7 +245,7 @@ main();
 
 
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 import {Eembedding} from "@baiducloud/qianfan";
 const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -268,7 +264,7 @@ main();
 文生图
 
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 import {Text2Image} from "@baiducloud/qianfan";
 const client = Text2Image({QIANFAN_BASE_URL: '***', QIANFAN_CONSOLE_API_BASE_URL: '***'});
@@ -302,7 +298,7 @@ main();
 ```bash
 
 import {Image2Text} from "@baiducloud/qianfan";
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
@@ -319,7 +315,7 @@ main();
 ### Plugin 插件
 千帆插件
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），  //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 import {Plugin} from "@baiducloud/qianfan";
 const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
@@ -367,12 +363,11 @@ main();
 
 // zhishikuMain();
 ```
-.
 
 ### Reranker 重排序
 
 ```bash
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， //QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
+// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 import {Reranker} from "@baiducloud/qianfan";
 const client = Reranker({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
