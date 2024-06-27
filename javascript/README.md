@@ -142,7 +142,7 @@ main();
 
 
 ### 向量Embeddings
-
+千帆 SDK 同样支持调用千帆大模型平台中的模型，将输入文本转化为用浮点数表示的向量形式。转化得到的语义向量可应用于文本检索、信息推荐、知识挖掘等场景。
 
 ```bash
 // 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
@@ -182,8 +182,9 @@ main();
 ```
 #### 指定模型 
 Embedding-V1
+#### 请求示例
 ```bash
-#请求示例
+
 import {Eembedding} from "@baiducloud/qianfan";
 
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
@@ -196,12 +197,16 @@ async function main() {
 }
 
 main();
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 ```
+
 bge-large-zh
+
+#### 请求示例
 ```bash
-#请求示例
 import {Eembedding} from "@baiducloud/qianfan";
 
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
@@ -214,15 +219,15 @@ async function main() {
 }
 
 main();
-
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 ```
 bge-large-en
+#### 请求示例
 ```bash
-#请求示例
 import {Eembedding} from "@baiducloud/qianfan";
-
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
 async function main() {
     const resp = await client.embedding({
@@ -233,13 +238,15 @@ async function main() {
 }
 
 main();
-
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 ```
 tao-8k
+#### 请求示例
 ```bash
-#请求示例
+
 import {Eembedding} from "@baiducloud/qianfan";
 
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
@@ -252,8 +259,9 @@ async function main() {
 }
 
 main();
-
-#响应示例
+```
+#### 响应示例
+```bash
 [0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
 
 ```
@@ -313,7 +321,9 @@ main();
 
 ```
 ### Plugin 插件
-千帆插件
+千帆插件 SDK支持使用平台插件能力，以帮助用户快速构建 LLM 应用或将 LLM 应用到自建程序中。支持知识库、智慧图问、天气等插件。
+
+
 ```bash
 // 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
@@ -363,7 +373,7 @@ main();
 
 // zhishikuMain();
 ```
-一言插件 API-V2
+一言插件 API-V2 说图解画（ImageAI）：基于图片进行文字创作、回答问题，帮你写文案、想故事、图生图。暂仅支持10MB以内的图片。 览卷文档（ChatFile）：原ChatFile，可基于文档完成摘要、问答、创作等任务，仅支持10MB以内文档，不支持扫描件。 E言易图（eChart）：基于Apache Echarts为您提供数据洞察和图表制作，目前支持柱状图、折线图、饼图、雷达图、散点图、漏斗图、思维导图（树图）。
 ```bash
 // eChart插件
 async function yiYaneChartMain() {
