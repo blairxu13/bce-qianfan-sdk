@@ -110,10 +110,7 @@ main();
 ```bash
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
-setEnvVariable('QIANFAN_ACCESS_KEY','***');
-setEnvVariable('QIANFAN_SECRET_KEY','***');
-
-const client = new  ChatCompletion();
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const stream = await client.chat({
         messages: [
@@ -284,7 +281,7 @@ main();
 ```bash
 import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 
-const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const resp = await client.completions({
         prompt: '你好',
@@ -299,7 +296,7 @@ main();
 ```bash
 import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 
-const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***', Endpoint: '***' });
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const resp = await client.completions({
         prompt: '你好，你是谁',
@@ -326,7 +323,7 @@ main();
 ```bash
 import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 
-const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const stream = await client.completions({
         prompt: '你好，你是谁',
@@ -399,8 +396,7 @@ main();
 ```bash
 import {Embedding} from "@baiducloud/qianfan";
 
-const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
+const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const resp = await client.embedding({
         input: ['介绍下你自己吧', '你有什么爱好吗？'],
@@ -426,7 +422,7 @@ Embedding-V1
 
 import {Eembedding} from "@baiducloud/qianfan";
 
-const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const resp = await client.embedding({
         input: ['介绍下你自己吧', '你有什么爱好吗？'],
@@ -448,7 +444,7 @@ bge-large-zh
 ```bash
 import {Eembedding} from "@baiducloud/qianfan";
 
-const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const resp = await client.embedding({
         input: ['介绍下你自己吧', '你有什么爱好吗？'],
@@ -467,7 +463,7 @@ bge-large-en
 #### 请求示例
 ```bash
 import {Eembedding} from "@baiducloud/qianfan";
-const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 async function main() {
     const resp = await client.embedding({
         input: ['recommend some food for me, please','Tell me a fairy tale'],
@@ -514,7 +510,7 @@ main();
 // 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址），QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
 
 import {Text2Image} from "@baiducloud/qianfan";
-const client = Text2Image({QIANFAN_BASE_URL: '***', QIANFAN_CONSOLE_API_BASE_URL: '***'});
+const client = Text2Image({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
 async function main() {
     const resp = await client.text2Image({
