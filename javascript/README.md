@@ -39,8 +39,10 @@ yarn add @baiducloud/qianfan
 
 1. 需要先安装python>=3.8
 2. pip install qianfan
+3. qianfan proxy 在执行qianfan proxy的同级目录下，新建 .env文件，设置 QIANFAN_ACCESS_KEY 和 QIANFAN_SECRET_KEY 即可
+注意：在Vue或react项目中集成使用时，需确保webpack为4以下，如果5以上版本需要根据提示配置polyfills，在后续的迭代中会逐步优化。
 
-
+注意访问地址，需要修改为proxy的ip地址，否则会跨域
 ## 第三步：初始化AK和SK
 ### 选择一：通过配置文件初始化
 在项目的根目录中创建一个名为 .env 的文件，并添加以下内容，SDK从当前目录的 .env 中读取配置。
@@ -296,7 +298,7 @@ main();
 ```bash
 import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 
-const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'，Endpoint: '***' });
 async function main() {
     const resp = await client.completions({
         prompt: '你好，你是谁',
