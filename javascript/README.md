@@ -90,10 +90,8 @@ main();
 ```bash
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
-setEnvVariable('QIANFAN_ACCESS_KEY','***');
-setEnvVariable('QIANFAN_SECRET_KEY','***');
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
-const client = new  ChatCompletion({Endpoint: '***'});
 async function main() {
     const resp = await client.chat({
         messages: [
@@ -231,152 +229,14 @@ main();
   usage: { prompt_tokens: 19, completion_tokens: 307, total_tokens: 326 }
 }
 ```
-#### ChatLaw Go相关
-##### 单轮
-```bash
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-
-	"github.com/baidubce/bce-qianfan-sdk/go/qianfan"
-)
-
-func main() {
-    // 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-	os.Setenv("QIANFAN_ACCESS_KEY", "your_iam_ak")
-	os.Setenv("QIANFAN_SECRET_KEY", "your_iam_sk")
-    
-    // 指定特定模型
-	chat := qianfan.NewChatCompletion(
-		qianfan.WithModel("ChatLaw"),
-	)
-    request := qianfan.ChatCompletionRequest{
-        Messages: []qianfan.ChatCompletionMessage{
-            qianfan.ChatCompletionUserMessage("你好！"),
-        },
-    }
-    request.SetExtra(map[string]interface{}{
-            "extra_parameters": map[string]interface{}{
-            "use_keyword":   false,
-            "use_reference": false,
-        },
-    })
-	resp, _ := chat.Do(
-		context.TODO(),
-		&request,
-	)
-	fmt.Println(resp.Result)
-}
-
-如果开车的人故意驾驶汽车撞向人群，但是没有造成重大损失，这可能违反了道路交通法规。根据《中华人民共和国刑法》规定，故意以驾车的方式撞人或者车辆，情节比较轻的，有可能受到三年以下的有期徒刑或者拘留的处罚。具体的处罚需要根据具体情况、情节轻重等因素进行综合考虑，并需要法院或行政机关的裁决。
-```
-##### 多轮
-```bash
-package main
-
-import (
-    "context"
-    "fmt"
-    "os"
-
-    "github.com/baidubce/bce-qianfan-sdk/go/qianfan"
-)
-
-func main() {
-    // 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-    os.Setenv("QIANFAN_ACCESS_KEY", "your_iam_ak")
-    os.Setenv("QIANFAN_SECRET_KEY", "your_iam_sk")
-    
-    // 指定特定模型
-    chat := qianfan.NewChatCompletion(
-        qianfan.WithModel("ChatLaw"),
-    )
-    request := qianfan.ChatCompletionRequest{
-        Messages: []qianfan.ChatCompletionMessage{
-            qianfan.ChatCompletionUserMessage("你好！"),
-            qianfan.ChatCompletionAssistantMessage("你好！有什么我可以帮助你的吗？"),
-            qianfan.ChatCompletionUserMessage("我在北京，周末可以去哪里玩？"),
-        },
-    }
-    request.SetExtra(map[string]interface{}{
-            "extra_parameters": map[string]interface{}{
-            "use_keyword":   false,
-            "use_reference": false,
-        },
-    })
-    resp, _ := chat.Do(
-        context.TODO(),
-        &request,
-    )
-    fmt.Println(resp.Result)
-}
-
-如果司机处于醉酒驾车状态，则属于醉酒驾车，属于危险驾驶行为之一，根据道路交通安全法及刑法规定，醉酒驾车属于危险驾驶行为，将被处罚，如果造成后果，将被判刑和罚款。
-```
-##### 流式
-```bash
-package main
-
-import (
-	"context"
-	"fmt"
-	"os"
-
-	"github.com/baidubce/bce-qianfan-sdk/go/qianfan"
-)
-
-func main() {
-	// 使用安全认证AK/SK鉴权，通过环境变量初始化；替换下列示例中参数，安全认证Access Key替换your_iam_ak，Secret Key替换your_iam_sk
-	os.Setenv("QIANFAN_ACCESS_KEY", "your_iam_ak")
-	os.Setenv("QIANFAN_SECRET_KEY", "your_iam_sk")
-
-	// 指定特定模型
-	chat := qianfan.NewChatCompletion(
-		qianfan.WithModel("ChatLaw"),
-	)
-	request := qianfan.ChatCompletionRequest{
-		Messages: []qianfan.ChatCompletionMessage{
-			qianfan.ChatCompletionUserMessage("你好！"),
-		},
-	}
-	request.SetExtra(map[string]interface{}{
-		"extra_parameters": map[string]interface{}{
-			"use_keyword":   false,
-			"use_reference": false,
-		},
-	})
-	resp, _ := chat.Stream(
-		context.TODO(),
-		&request,
-	)
-	for {
-		r, err := resp.Recv()
-		if err != nil {
-			panic(err)
-		}
-		if resp.IsEnd { // 判断是否结束
-			break
-		}
-		fmt.Println(r.Result)
-	}
-}
-
-根据中国
-《刑法》的规定，危险驾驶的情节较轻的，可以判处拘役或者罚金，情节特别轻微或者有其他可以从轻处罚情节的，可以免于
-处罚。
-因此，如果一个人没有造成重大损失，可能会被处以拘役或者罚金。
-```
 ### 续写Completions
 千帆 SDK 支持调用续写Completions相关API，支持非流式、流式调用。
 
 
 ```bash
 import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
-const client = new Completions({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
 async function main() {
     const resp = await client.completions({
         prompt: 'In Bash, how do I list all text files in the current directory (excluding subdirectories) that have been modified in the last month',
@@ -539,7 +399,8 @@ main();
 ```bash
 import {Embedding} from "@baiducloud/qianfan";
 
-const client = new Embedding({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
+const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+
 async function main() {
     const resp = await client.embedding({
         input: ['介绍下你自己吧', '你有什么爱好吗？'],
