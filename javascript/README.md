@@ -38,7 +38,7 @@ yarn add @baiducloud/qianfan
 
 ## Step 2: Authentication
 
-Before using the Qianfan SDK, users need to obtain Access Key and Secret Key from the Baidu Intelligent Cloud Console - Security Authentication page from [Qianfan Console](https://console.bce.baidu.com/iam/#/iam/accesslist), additionally, in the [Qianfan Console (https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application), create an application, select the services to enable. For more specific procedures, refer to the platform documentation.
+Before using the Qianfan SDK, users need to obtain Access Key and Secret Key from the Baidu Intelligent Cloud Console - Security Authentication page from [Qianfan Console](https://console.bce.baidu.com/iam/#/iam/accesslist), additionally, in the [Qianfan Console] (https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application), create an application, select the services to enable. For more specific procedures, refer to the platform documentation.
 
 ### Option 1: Authenticate Using Access Key/Secret Key (AK/SK) [Recommended]
 
@@ -60,7 +60,7 @@ If you already have an application, you can skip this step. If there is no exist
 
 (3) On the application access page, obtain the API Key and Secret Key for your application.
 
-## Step 3：初始化AK和SK
+## Step 3：Initializing AK (Access Key) and SK (Secret Key)
 
 ### Option 1: Initialization via Configuration File [Recommended]
 
