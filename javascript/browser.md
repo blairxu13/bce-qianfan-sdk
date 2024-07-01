@@ -33,9 +33,6 @@ npm install @baiducloud/qianfan
 # or
 yarn add @baiducloud/qianfan
 ```
-Sure, here's the translation of the provided text to English:
-
----
 
 ## Quick Start
 
