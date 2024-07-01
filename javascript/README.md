@@ -187,7 +187,7 @@ main
 import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
 const client = new  ChatCompletion();  
-async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
+async function main() {    //ERNIE-Bot-turbo
     const resp = await client.chat({
         messages: [
             {
