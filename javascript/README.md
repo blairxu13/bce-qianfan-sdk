@@ -108,8 +108,9 @@ async function main() {
         messages: [
             {
                 role: 'user',
-                content: '你好！',
+                content: 'how are you? please answer in English！',
             },
+
         ],
     });
     console.log(resp);
@@ -120,13 +121,13 @@ main();
 
 ```bash
 {
-  id: 'as-xdiknr8pj9',
+ id: 'as-x0m7bajy10',
   object: 'chat.completion',
-  created: 1709721393,
-  result: '你好！有什么我可以帮助你的吗？',
+  created: 1719824474,
+  result: 'Hello, I am an artificial intelligence language model. I do not have a physical form or ability to interact with humans. However, I can answer your questions or provide information in English. What can I do for you?',
   is_truncated: false,
   need_clear_history: false,
-  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
+  usage: { prompt_tokens: 8, completion_tokens: 44, total_tokens: 52 }
 }
 ```
 
@@ -141,7 +142,7 @@ async function main() {
         messages: [
             {
                 role: 'user',
-                content: '今天深圳天气',
+                content: 'what is weather like today in shenzhen please answer in english',
             },
         ],
      }, "ERNIE-Bot-turbo");
@@ -149,6 +150,17 @@ async function main() {
 }
 
 main();
+```
+```bash
+{
+ id: 'as-axv9agwvds',
+  object: 'chat.completion',
+  created: 1719824681,
+  result: "Hello, Shenzhen has a subtropical monsoon climate, with hot and humid summers and mild winters. The weather in Shenzhen today is expected to be sunny and hot, with temperatures around 30 degrees Celsius. It is recommended that you wear light clothing and sunscreen if you plan to go outdoors. If you have any other questions about Shenzhen's weather, please feel free to ask me.",
+  is_truncated: false,
+  need_clear_history: false,
+  usage: { prompt_tokens: 13, completion_tokens: 85, total_tokens: 98 }
+}
 ```
 #### User-Deployed Custom Model Service
 ```ts
@@ -160,7 +172,7 @@ async function main() {
         messages: [
             {
                 role: 'user',
-                content: '你好！',
+                content: 'hello！',
             },
         ],
     });
@@ -180,15 +192,15 @@ async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
         messages: [
             {
                 role: 'user',
-                content: '你好！',
+                content: 'hello！',
             },
             {
                  role: "assistant",
-                 content: "你好，请问有什么我可以帮助你的吗？"
+                 content: "hello, is there anything I could help you with？"
              },
              {
                  role: "user",
-                 "content": "我在北京，周末可以去哪里玩？"
+                 "content": "In Beijing, where can I go for fun on the weekend?"
              },
         ],
     });
@@ -200,33 +212,33 @@ main();
 
 ```bash
 {
-  id: 'as-8vcq0n4u0e',
+ id: 'as-3wynwqj5bc',
   object: 'chat.completion',
-  created: 1709887877,
-  result: '北京是一个拥有许多有趣和独特景点的大城市，周末你可以去很多地方玩。例如：
-' +
-    '
-' +
-    '1. **故宫博物院**：这是中国最大的古代建筑群，有着丰富的历史和文化遗产，是个很好的适合全家人游玩的地方。
-' +
-    '2. **天安门广场**：这里是北京的心脏，周围有许多历史和现代建筑。你可以在广场上漫步，欣赏升旗仪式和观看周围的繁华景象。
-' +
-    '3. **颐和园**：这是一个美丽的皇家园林，有着优美的湖泊和精美的古建筑。你可以在这里漫步，欣赏美丽的景色，同时也可以了解中国的传统文化。
-' +
-    '4. **北京动物园**：这是中国最大的动物园之一，有许多稀有动物，包括熊猫、老虎、长颈鹿等。对于孩子们来说是个很好的去处。
-' +
-    '5. **798艺术区**：这是一个充满艺术气息的地方，有许多画廊、艺术工作室和艺术展览。这里有许多新的现代艺术作品，可以欣赏到一些艺术家的创作。
-' +
-    '6. **三里屯酒吧街**：如果你对夜生活感兴趣，可以去三里屯酒吧街。这里有许多酒吧和餐馆，是一个热闹的夜生活场所。
-' +
-    '7. **北京环球度假区**：如果你们喜欢主题公园，那么可以去环球度假区，虽然这是在建的，但是等它建好之后肯定是一个很好的去处。
-' +
-    '
-' +
-    '当然，你也可以考虑一些其他的地方，比如购物街、博物馆、公园等等。希望这些建议对你有所帮助！',
+  created: 1719824849,
+  result: 'Sure! Here are my suggestions for your weekend plans in Beijing:\n' +
+    '\n' +
+    'Saturday:\n' +
+    '\n' +
+    "1. Visit the Forbidden City (故宫): It's one of the most famous landmarks in Beijing and a must-see for tourists.\n" +
+    '\n' +
+    "2. Take a stroll in the hutong (胡同): Beijing's hutong are traditional alleys that are full of local life. You can try some local food and chat with the locals.\n" +
+    '\n' +
+    "3. Visit the Temple of Heaven: It's a beautiful place with a lot of historical buildings and gardens.\n" +
+    '\n' +
+    "4. Try some local food: Beijing's cuisine is famous throughout China, and you can try some delicious dishes like roast duck and potstickers.\n" +
+    '\n' +
+    'Sunday:\n' +
+    '\n' +
+    "1. Visit the Great Wall: It's one of the Seven Wonders of the World and a must-see for any traveler. You can take a hiking or bike ride to see the beautiful scenery.\n" +
+    '\n' +
+    "2. Visit the Bird's Nest and Water Cube: These are two iconic buildings from the 2008 Beijing Olympics. You can take a tour or just take some photos.\n" +
+    '\n' +
+    '3. Explore the city center: Beijing has a lot of shopping centers and markets where you can find local goods and souvenirs.\n' +
+    '\n' +
+    'Remember to pack comfortable shoes and wear a jacket or sweater during the cooler months. Enjoy your weekend in Beijing!',
   is_truncated: false,
   need_clear_history: false,
-  usage: { prompt_tokens: 19, completion_tokens: 307, total_tokens: 326 }
+  usage: { prompt_tokens: 21, completion_tokens: 305, total_tokens: 326 }
 }
 ```
 ### Streaming Output
@@ -242,10 +254,10 @@ async function main() {
         messages: [
             {
                 role: 'user',
-                content: '你好！',
+                content: 'hello',
             },
         ],
-        stream: true,   //启用流式返回
+        stream: true,   //streaming mode
     });
       for await (const chunk of stream as AsyncIterableIterator<any>) {
         console.log(chunk);
@@ -263,7 +275,7 @@ main();
   sentence_id: 0,
   is_end: false,
   is_truncated: false,
-  result: '你好！',
+  result: 'hello',
   need_clear_history: false,
   usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
 }
@@ -274,7 +286,7 @@ main();
   sentence_id: 1,
   is_end: false,
   is_truncated: false,
-  result: '有什么我可以帮助你的吗？',
+  result: 'may I help you with anything?',
   need_clear_history: false,
   usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
 }
@@ -317,7 +329,7 @@ import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 const client = new Completions();
 async function main() {
     const resp = await client.completions({
-        prompt: '你好',
+        prompt: 'hello',
     }, 'ERNIE-Bot');
     console.log(resp);
 }
@@ -334,7 +346,7 @@ import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 const client = new Completions({QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***', Endpoint: '***'});
 async function main() {
     const resp = await client.completions({
-        prompt: '你好，你是谁',
+        prompt: 'hello，who are you',
     });
     console.log(resp);
 }
@@ -347,7 +359,7 @@ main();
   id: 'as-hfmv5mvdim',
   object: 'chat.completion',
   created: 1709779789,
-  result: '你好！请问有什么我可以帮助你的吗？无论你有什么问题或需要帮助，我都会尽力回答和提供支持。请随时告诉我你的需求，我会尽快回复你。',
+  result: 'Hello! How can I help you today? Whether you have any questions or need assistance, I'll do my best to provide answers and support. Please feel free to let me know your needs, and I'll respond as quickly as possible.',
   is_truncated: false,
   need_clear_history: false,
   finish_reason: 'normal',
@@ -362,8 +374,8 @@ import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
 async function main() {
     const stream = await client.completions({
-        prompt: '你好，你是谁',
-        stream: true,   //启用流式返回
+        prompt: 'hello, who are you?',
+        stream: true,   //streaming response
     });
      for await (const chunk of stream as AsyncIterableIterator<any>) {
         console.log(chunk);
@@ -381,7 +393,7 @@ main();
   sentence_id: 0,
   is_end: false,
   is_truncated: false,
-  result: '你好！',
+  result: 'hello！',
   need_clear_history: false,
   finish_reason: 'normal',
   usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
@@ -393,7 +405,7 @@ main();
   sentence_id: 1,
   is_end: false,
   is_truncated: false,
-  result: '请问有什么可以帮助你的吗？',
+  result: 'Is there anything I can help you with?',
   need_clear_history: false,
   finish_reason: 'normal',
   usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
@@ -423,7 +435,7 @@ import {Embedding} from "@baiducloud/qianfan";
 const client = new Embedding();
 async function main() {
     const resp = await client.embedding({
-        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+        input: ['Can you introduce yourself?', 'Do you have any hobbies?'],
     });
     const data = resp.data[0] as any;
     console.log(data.embedding);
@@ -449,7 +461,7 @@ import {Eembedding} from "@baiducloud/qianfan";
 const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
 async function main() {
     const resp = await client.embedding({
-        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+        input: ['Can you introduce yourself?', 'Do you have any hobbies?'],
     }, 'Embedding-V1');
     const data = resp.data[0] as any;
     console.log(data.embedding);
@@ -477,7 +489,7 @@ async function main() {
     });
 
     const base64Image = resp.data[0].b64_image;
-    // 创建一个简单的服务器
+    // create a simple server:
     const server = http.createServer((req, res) => {
         res.writeHead(200, {'Content-Type': 'text/html'});
         let html = `<html><body><img src="data:image/jpeg;base64,${base64Image}" /><br/></body></html>`;
@@ -486,7 +498,7 @@ async function main() {
 
     const port = 3002;
     server.listen(port, () => {
-        console.log(`服务器运行在 http://localhost:${port}`);
+        console.log(`server is running on http://localhost:${port}`);
     });
 }
 
@@ -499,31 +511,12 @@ main();
 import {setEnvVariable} from '@baiducloud/qianfan'
 import {Image2Text} from "@baiducloud/qianfan";
 
-// 调用大模型
+// using big model
 const client = new Image2Text();
 async function main() {
     const resp = await client.image2Text({
-        prompt: '分析一下图片画了什么',
-        image: 'iVBORw0KGgoAAAANSUhEUgAAB4IAAxxxxxxxxxxxx=',  //  请替换图片的base64编码
-    });
-    console.log(resp.result)
-}
-
-main();
-```
-
-##### User-defined Custom Model
-
-```ts
-import {setEnvVariable} from '@baiducloud/qianfan'
-import {Image2Text} from "@baiducloud/qianfan";
-
-// 调用大模型
-const client = new Image2Text({Endpoint: '***'});
-async function main() {
-    const resp = await client.image2Text({
-        prompt: '分析一下图片画了什么',
-        image: 'iVBORw0KGgoAAAANSUhEUgAAB4IAAxxxxxxxxxxxx=',  //  请替换图片的base64编码
+        prompt: 'Analyzing what a picture depicts',
+        image: 'iVBORw0KGgoAAAANSUhEUgAAB4IAAxxxxxxxxxxxx=',  // replace the base64 encoding of an image
     });
     console.log(resp.result)
 }
@@ -538,29 +531,32 @@ main();
 The SDK supports platform plugin capabilities to help users quickly build LLM applications or integrate LLM into their own programs. It supports plugins such as knowledge base, smart graph Q&A, weather, and more.
 ```ts
 import {Plugin} from "@baiducloud/qianfan";
-// 注意：千帆插件需要传入Endpoint， 一言插件不用
+// Note: The qianfan plugin requires passing an Endpoint. The yiyan plugin does not require it.
 const client = new Plugin({Endpoint: '***'});
 
-// 天气插件
+// weatherchat pluggin
 async function main() {
     const resp = await client.plugins({
-        query: '深圳今天天气如何',
-        /** 
-         *  插件名称
-         * 知识库插件固定值为["uuid-zhishiku"] 
-         * 智慧图问插件固定值为["uuid-chatocr"]
-         * 天气插件固定值为["uuid-weatherforecast"]
-         */ 
+        query: 'what's the weather like in shenzhen today?',
+       Here is the translation of the text into English:
+
+/** 
+ * Plugin Name
+ * Knowledge Base Plugin has a fixed value of ["uuid-zhishiku"]
+ * Wisdom Image Q&A Plugin has a fixed value of ["uuid-chatocr"]
+ * Weather Plugin has a fixed value of ["uuid-weatherforecast"]
+ */
+
         plugins: [
             'uuid-weatherforecast',
         ],
     });
 }
 
-// 智慧图问
+
 async function chatocrMain() {
     const resp = await client.plugins({
-        query: '请解析这张图片, 告诉我怎么画这张图的简笔画',
+        query: 'In English, please analyze this picture and tell me how to draw a simple sketch of it.',
         plugins: [
             'uuid-chatocr',
         ],
@@ -571,7 +567,7 @@ async function chatocrMain() {
 // 知识库
 async function zhishikuMain() {
     const reps = await client.plugins({
-        query: '你好什么时候飞行员需要负法律责任？',
+        query: 'Hello, when do pilots need to assume legal responsibility?',
         plugins: [
             'uuid-zhishiku',
         ],
@@ -600,13 +596,13 @@ eChart uses Apache Echarts to provide data insights and create various types of 
 
 
 ```ts
-// eChart插件
+// eChart plugin
 async function yiYaneChartMain() {
     const resp = await client.plugins({
         messages: [
             {
                 "role": "user",
-                "content": "帮我画一个饼状图：8月的用户反馈中，BUG有100条，需求有100条，使用咨询100条，总共300条反馈"
+                "content": "Help me draw a pie chart: In August, there were 100 bug reports, 100 feature requests, and 100 usage consultations, totaling 300 feedback entries."
             }
         ],
         plugins: ["eChart"],
@@ -615,13 +611,13 @@ async function yiYaneChartMain() {
 
 yiYaneChartMain() 
 
-// ImageAI插件测试
+// ImageAI plugin
 async function yiYanImageAIMain() {
     const resp = await client.plugins({
         messages: [
             {
                 "role": "user",
-                "content": "<img>cow.jpeg</img><url>https://xxx/xxx/xxx.jpeg</url> 这张图片当中都有啥"
+                "content": "<img>cow.jpeg</img><url>https://xxx/xxx/xxx.jpeg</url> what are in this photo"
             }
         ],
         plugins: ["ImageAI"],
@@ -634,10 +630,10 @@ yiYanImageAIMain()
 async function yiYanChatFileMain() {
     const resp = await client.plugins({
         messages: [
-            {'role': 'user', 'content': '<file>浅谈牛奶的营养与消费趋势.docx</file><url>https://xxx/xxx/xxx.docx</url>'},
+            {'role': 'user', 'content': '<file>Discussion on the Nutritional Value and Consumption Trends of Milk.docx</file><url>https://xxx/xxx/xxx.docx</url>'},
             // eslint-disable-next-line max-len
-            {'role': 'assistant', 'content': '以下是该文档的关键内容：\n牛奶作为一种营养丰富、易消化吸收的天然食品，受到广泛欢迎。其价值主要表现在营养成分和医学价值两个方面。在营养成分方面，牛奶含有多种必需的营养成分，如脂肪、蛋白质、乳糖、矿物质和水分等，比例适中，易于消化吸收。在医学价值方面，牛奶具有促进生长发育、维持健康水平的作用，对于儿童长高也有积极影响。此外，牛奶还具有极高的市场前景，消费者关注度持续上升，消费心理和市场需求也在不断变化。为了更好地发挥牛奶的营养价值，我们应该注意健康饮用牛奶的方式，适量饮用，并根据自身情况选择合适的牛奶产品。综上所述，牛奶作为一种理想的天然食品，不仅具有丰富的营养成分，还具有极高的医学价值和市场前景。我们应该充分认识牛奶的价值，科学饮用，让牛奶为我们的健康发挥更大的作用。'},
-            {'role': 'user', 'content': '牛奶的营养成本有哪些'},
+            {'role': 'assistant', 'content': 'Milk, as a natural food rich in nutrients and easy to digest and absorb, is widely popular. Its value is mainly manifested in two aspects: nutritional composition and medical value. In terms of nutritional composition, milk contains various essential nutrients such as fats, proteins, lactose, minerals, and water, in appropriate proportions that are easily digested and absorbed. In terms of medical value, milk promotes growth and development and helps maintain a healthy level, positively impacting children's growth. Furthermore, milk has a promising market outlook, with increasing consumer attention, evolving consumer psychology, and market demands. To better harness the nutritional value of milk, it is important to drink it in a healthy manner, in moderation, and choose suitable milk products according to individual needs. In conclusion, milk is an ideal natural food, not only rich in nutrients but also with significant medical and market value. We should fully recognize the value of milk, consume it scientifically, and allow milk to play a greater role in our health.'},
+            {'role': 'user', 'content': 'What are the nutritional components of milk?'},
         ],
         plugins: ['ChatFile']
     });
@@ -650,13 +646,13 @@ Cross-lingual semantic representation algorithm models specialize in optimizing 
 
 ```ts
 import {Reranker} from "@baiducloud/qianfan";
-// 直接读取 env  
+// read env file
 const client = new Reranker();
 
 async function main() {
      const resp = await client.reranker({
-        query: '上海天气',
-        documents: ['上海气候', '北京美食'],
+        query: 'shanghai weather',
+        documents: ['shanghai weather', 'beijing cuisine'],
     });
 }
 
