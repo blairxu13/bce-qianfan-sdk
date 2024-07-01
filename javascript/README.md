@@ -1,6 +1,6 @@
-# 百度千帆大模型平台 JavaScript SDK
+# Baidu Qianfan Large Model Platform Javascript SDK
 
-针对百度智能云千帆大模型平台，我们推出了一套 JavaScript SDK（下称千帆 SDK），方便用户通过代码接入并调用千帆大模型平台的能力。
+For Baidu Cloud's Qianfan Large Model Platform, we have launched a JavaScript SDK (referred to as Qianfan SDK below), which facilitates users to integrate and invoke the capabilities of the Qianfan Large Model Platform through code.
 
 [![license][license-image]][license-url]
 [![codecov][codecov-image]][codecov-url]
@@ -24,8 +24,9 @@
 [issue-url]: https://github.com/baidubce/bce-qianfan-sdk/issues
 [ticket-image]: https://img.shields.io/badge/%E8%81%94%E7%B3%BB%E6%88%91%E4%BB%AC-%E7%99%BE%E5%BA%A6%E6%99%BA%E8%83%BD%E4%BA%91%E5%B7%A5%E5%8D%95-brightgreen
 [ticket-url]: https://console.bce.baidu.com/ticket/#/ticket/create?productId=279
+## Quick Start
 
-## 如何安装
+## Step 1: Install Node.js SDK
 
 ```bash
 npm install @baiducloud/qianfan
@@ -33,218 +34,457 @@ npm install @baiducloud/qianfan
 yarn add @baiducloud/qianfan
 ```
 
-## 快速使用
 
-### 鉴权
 
-在使用千帆 SDK 之前，用户需要 [百度智能云控制台 - 安全认证](https://console.bce.baidu.com/iam/#/iam/accesslist) 页面获取 Access Key 与 Secret Key，并在 [千帆控制台](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application) 中创建应用，选择需要启用的服务，具体流程参见平台 [说明文档](https://cloud.baidu.com/doc/Reference/s/9jwvz2egb)。
+## Step 2: Authentication
 
-SDK 支持从当前目录的 .env 中读取配置，也可以修改环境变量 QIANFAN_ACCESS_KEY 和 QIANFAN_SECRET_KEY ，同时支持初始化手动传入 AK/SK 。
+Before using the Qianfan SDK, users need to obtain Access Key and Secret Key from the Baidu Intelligent Cloud Console - Security Authentication page from [Qianfan Console](https://console.bce.baidu.com/iam/#/iam/accesslist), additionally, in the [Qianfan Console (https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application), create an application, select the services to enable. For more specific procedures, refer to the platform documentation.
 
-浏览器使用不需要鉴权，连接proxy使用，方法如下：
+### Option 1: Authenticate Using Access Key/Secret Key (AK/SK) [Recommended]
 
-1. 需要先安装python>=3.8
-2. pip install qianfan
-3. qianfan proxy
-在执行qianfan proxy的同级目录下，新建 .env文件，设置 QIANFAN_ACCESS_KEY 和 QIANFAN_SECRET_KEY 即可
+(1) Log in to the Baidu Intelligent Cloud Qianfan Console, click on "User Account -> Security Authentication" to access the Access Key management interface.
 
-注意：在Vue或react项目中集成使用时，需确保webpack为4以下，如果5以上版本需要根据提示配置polyfills，在后续的迭代中会逐步优化。
+(2) View the Access Key/Secret Key on the Security Authentication page.
 
-注意访问地址，需要修改为proxy的ip地址，否则会跨域
+Note:
+When initializing authentication, use the Access Key and Secret Key from "Security Authentication/Access Key" for authentication. For more authentication mechanisms, please refer to the authentication mechanism documentation.
+The Security Authentication Access Key (AK)/Secret Key (SK) is different from the API Key (AK) and Secret Key (SK) used to obtain Access Tokens for applications.
 
-![proxy](../docs/imgs/proxy.png)
+### Option 2: Authenticate Using Application AK/SK for API Calls [Not Recommended, May Lead to Compatibility Issues with New Features]
 
-#### env 读取
+(1) Log in to the Baidu Cloud Qianfan Console.
+   Note: To ensure stable service operation, it is advisable to keep the account in a non-overdue payment status.
 
-##### env 文件示例
+(2) Create a Qianfan application.
+If you already have an application, you can skip this step. If there is no existing application, create one in the console. You can also refer to the application integration guide for instructions on how to create an application.
 
-在你项目的根目录中创建一个名为 .env 的文件，并添加以下内容：
+(3) On the application access page, obtain the API Key and Secret Key for your application.
 
-```dotenv
+## Step 3：初始化AK和SK
+
+### Option 1: Initialization via Configuration File [Recommended]
+
+Create a file named .env in the root directory of your project and add the following content. The SDK reads configuration from the .env file in the current directory:
+
+```bash
 QIANFAN_AK=your_access_key
 QIANFAN_SK=your_secret_key
 QIANFAN_ACCESS_KEY=another_access_key
 QIANFAN_SECRET_KEY=another_secret_key
 ```
 
-#### 修改 env 的配置 （仅 node可使用）
+### Option 2: Initialization via Environment Variables
 
-```ts
-import {setEnvVariable} from "@baiducloud/qianfan";
-setEnvVariable('QIANFAN_AK','***');
-setEnvVariable('QIANFAN_SK','***');
- ```
-
-#### 初始化手动传入 AK/SK
-
-```ts
-// 手动传 AK/SK 
-const client = new ChatCompletion({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-// 手动传 ACCESS_KEY / SECRET_KEY
-const client = new ChatCompletion({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
-
+```bash
+setEnvVariable('QIANFAN_AK','your_api_key');
+setEnvVariable('QIANFAN_SK','your_secret_key');
 ```
 
-### Chat 对话
+### Option 3: Initialization via Parameters (Using ChatCompletion as an Example)
 
-可以使用 `ChatCompletion` 对象完成对话相关操作
+```js
+import { ChatCompletion } from "@baiducloud/qianfan";
+
+// Initialize using parameters, replace 'your_api_key' with your application's API Key and 'your_secret_key' with your application's Secret Key. Example for ChatCompletion:
+const client = new ChatCompletion({ QIANFAN_AK: 'your_api_key', QIANFAN_SK: 'your_secret_key' });
+
+// Alternatively, initialize using parameters for ACCESS_KEY / SECRET_KEY:
+const client = new ChatCompletion({ QIANFAN_ACCESS_KEY: 'your_api_key', QIANFAN_SECRET_KEY: 'your_secret_key' });
+```
+## Step 4: Using SDK
+The functionality is as follows:
+### Chat Single-turn Dialogue
+#### Default Model
 
 ```ts
-// node 环境
-import {ChatCompletion} from "@baiducloud/qianfan";
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
-// 直接读取 env
+setEnvVariable('QIANFAN_ACCESS_KEY','***');
+setEnvVariable('QIANFAN_SECRET_KEY','***');
+
 const client = new  ChatCompletion();
-// 手动传 AK/SK 
-// const client = new ChatCompletion({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {ChatCompletion} from "@baiducloud/qianfan";
-const client = new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
 async function main() {
     const resp = await client.chat({
         messages: [
             {
-                role: "user",
-                content: "今天深圳天气",
+                role: 'user',
+                content: '你好！',
             },
         ],
-    }, "ERNIE-Bot-turbo");
+    });
+    console.log(resp);
 }
 
 main();
-
 ```
 
-参数传入 stream 为 `true` 时，返回流式结果
-
-```ts
-// 流式 测试
-async function main() {
-    const stream =  await client.chat({
-          messages: [
-              {
-                  role: "user",
-                  content: "等额本金和等额本息有什么区别？"
-              },
-          ],
-          stream: true,
-      }, "ERNIE-Bot-turbo");
-      for await (const chunk of stream as AsyncIterableIterator<any>) {
-           // 返回结果
-        }
+```bash
+{
+  id: 'as-xdiknr8pj9',
+  object: 'chat.completion',
+  created: 1709721393,
+  result: '你好！有什么我可以帮助你的吗？',
+  is_truncated: false,
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
 }
 ```
 
-### Completion 续写
-
-对于不需要对话，仅需要根据 prompt 进行补全的场景来说，用户可以使用 `Completions` 来完成这一任务。
+#### Specify Pre-trained Model
 
 ```ts
-// node环境
-import {Completions} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Completions();
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
-// 手动传 AK/SK
-// const client = new Completions({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
+const client = new  ChatCompletion();
+async function main() {
+    const resp = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '今天深圳天气',
+            },
+        ],
+     }, "ERNIE-Bot-turbo");
+    console.log(resp);
+}
 
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Completions} from "@baiducloud/qianfan";
-const client = Completions({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+main();
+```
+#### User-Deployed Custom Model Service
+```ts
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
 
+const client = new  ChatCompletion({Endpoint: '***'});
+async function main() {
+    const resp = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好！',
+            },
+        ],
+    });
+    console.log(resp);
+}
+
+main
+```
+### Multi-turn Dialogue
+
+```ts
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new  ChatCompletion();  
+async function main() {    // 调用默认模型，即 ERNIE-Bot-turbo
+    const resp = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好！',
+            },
+            {
+                 role: "assistant",
+                 content: "你好，请问有什么我可以帮助你的吗？"
+             },
+             {
+                 role: "user",
+                 "content": "我在北京，周末可以去哪里玩？"
+             },
+        ],
+    });
+    console.log(resp);
+}
+
+main();
+```
+
+```bash
+{
+  id: 'as-8vcq0n4u0e',
+  object: 'chat.completion',
+  created: 1709887877,
+  result: '北京是一个拥有许多有趣和独特景点的大城市，周末你可以去很多地方玩。例如：
+' +
+    '
+' +
+    '1. **故宫博物院**：这是中国最大的古代建筑群，有着丰富的历史和文化遗产，是个很好的适合全家人游玩的地方。
+' +
+    '2. **天安门广场**：这里是北京的心脏，周围有许多历史和现代建筑。你可以在广场上漫步，欣赏升旗仪式和观看周围的繁华景象。
+' +
+    '3. **颐和园**：这是一个美丽的皇家园林，有着优美的湖泊和精美的古建筑。你可以在这里漫步，欣赏美丽的景色，同时也可以了解中国的传统文化。
+' +
+    '4. **北京动物园**：这是中国最大的动物园之一，有许多稀有动物，包括熊猫、老虎、长颈鹿等。对于孩子们来说是个很好的去处。
+' +
+    '5. **798艺术区**：这是一个充满艺术气息的地方，有许多画廊、艺术工作室和艺术展览。这里有许多新的现代艺术作品，可以欣赏到一些艺术家的创作。
+' +
+    '6. **三里屯酒吧街**：如果你对夜生活感兴趣，可以去三里屯酒吧街。这里有许多酒吧和餐馆，是一个热闹的夜生活场所。
+' +
+    '7. **北京环球度假区**：如果你们喜欢主题公园，那么可以去环球度假区，虽然这是在建的，但是等它建好之后肯定是一个很好的去处。
+' +
+    '
+' +
+    '当然，你也可以考虑一些其他的地方，比如购物街、博物馆、公园等等。希望这些建议对你有所帮助！',
+  is_truncated: false,
+  need_clear_history: false,
+  usage: { prompt_tokens: 19, completion_tokens: 307, total_tokens: 326 }
+}
+```
+### Streaming Output
+
+By passing `stream: true`
+
+```ts
+import {ChatCompletion, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new  ChatCompletion();
+async function main() {
+    const stream = await client.chat({
+        messages: [
+            {
+                role: 'user',
+                content: '你好！',
+            },
+        ],
+        stream: true,   //启用流式返回
+    });
+      for await (const chunk of stream as AsyncIterableIterator<any>) {
+        console.log(chunk);
+    }
+}
+
+main();
+```
+
+```bash
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 0,
+  is_end: false,
+  is_truncated: false,
+  result: '你好！',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
+}
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 1,
+  is_end: false,
+  is_truncated: false,
+  result: '有什么我可以帮助你的吗？',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 0, total_tokens: 2 }
+}
+{
+  id: 'as-f7mrqpanb3',
+  object: 'chat.completion',
+  created: 1709724132,
+  sentence_id: 2,
+  is_end: true,
+  is_truncated: false,
+  result: '',
+  need_clear_history: false,
+  usage: { prompt_tokens: 2, completion_tokens: 8, total_tokens: 10 }
+}
+```
+### Continuation 
+
+The Qianfan SDK supports calling the Continuation Completions API, offering both non-streaming and streaming invocation methods.
+
+#### Default Model
+
+```ts
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new Completions({ QIANFAN_ACCESS_KEY: 'your_iam_ak', QIANFAN_SECRET_KEY: 'your_iam_sk' });
 async function main() {
     const resp = await client.completions({
-        prompt: 'Introduce the city Beijing',
-    }, "SQLCoder-7B");
+        prompt: 'In Bash, how do I list all text files in the current directory (excluding subdirectories) that have been modified in the last month',
+    });
+    console.log(resp);
 }
 
 main();
 ```
-
-参数传入 stream 为 `true` 时，返回流式结果
+#### Specify Pre-trained Model
 
 ```ts
-// 流式 
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new Completions();
 async function main() {
-    const stream =  await client.completions({
-        prompt: 'Introduce the city Beijing',
-        stream: true,
-      }, "SQLCoder-7B");
-      for await (const chunk of stream as AsyncIterableIterator<any>) {
-          // 返回结果
-        }
+    const resp = await client.completions({
+        prompt: '你好',
+    }, 'ERNIE-Bot');
+    console.log(resp);
 }
+
+main();
+```
+#### User-Deployed Custom Model Service
+
+Passing the service address through Endpoint
+
+```ts
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
+
+const client = new Completions({QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***', Endpoint: '***'});
+async function main() {
+    const resp = await client.completions({
+        prompt: '你好，你是谁',
+    });
+    console.log(resp);
+}
+
 main();
 ```
 
-### Embedding 向量化
-
-千帆 SDK 同样支持调用千帆大模型平台中的模型，将输入文本转化为用浮点数表示的向量形式。转化得到的语义向量可应用于文本检索、信息推荐、知识挖掘等场景。
+```bash
+{
+  id: 'as-hfmv5mvdim',
+  object: 'chat.completion',
+  created: 1709779789,
+  result: '你好！请问有什么我可以帮助你的吗？无论你有什么问题或需要帮助，我都会尽力回答和提供支持。请随时告诉我你的需求，我会尽快回复你。',
+  is_truncated: false,
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 34, total_tokens: 35 }
+}
+```
+#### streaming 
 
 ```ts
-// node环境
-import {Eembedding} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Eembedding();
+import {Completions, setEnvVariable} from "@baiducloud/qianfan";
 
-// 手动传 AK/SK 测试
-// const client = new Eembedding({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
+const client = new Completions({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const stream = await client.completions({
+        prompt: '你好，你是谁',
+        stream: true,   //启用流式返回
+    });
+     for await (const chunk of stream as AsyncIterableIterator<any>) {
+        console.log(chunk);
+    }
+}
 
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Eembedding} from "@baiducloud/qianfan";
-const client = Eembedding({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+main();
+```
 
+```bash
+{
+  id: 'as-cck51r1rfw',
+  object: 'chat.completion',
+  created: 1709779938,
+  sentence_id: 0,
+  is_end: false,
+  is_truncated: false,
+  result: '你好！',
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
+}
+{
+  id: 'as-cck51r1rfw',
+  object: 'chat.completion',
+  created: 1709779938,
+  sentence_id: 1,
+  is_end: false,
+  is_truncated: false,
+  result: '请问有什么可以帮助你的吗？',
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 2, total_tokens: 3 }
+}
+{
+  id: 'as-cck51r1rfw',
+  object: 'chat.completion',
+  created: 1709779938,
+  sentence_id: 2,
+  is_end: true,
+  is_truncated: false,
+  result: '',
+  need_clear_history: false,
+  finish_reason: 'normal',
+  usage: { prompt_tokens: 1, completion_tokens: 8, total_tokens: 9 }
+}
+```
+### Embeddings
+
+The Qianfan SDK also supports calling models within the Qianfan Large Model Platform to convert input text into vector representations represented by floating-point numbers. These semantic vectors can be used in scenarios such as text retrieval, information recommendation, and knowledge mining.
+
+#### Default Model
+
+```ts
+import {Embedding} from "@baiducloud/qianfan";
+
+const client = new Embedding();
 async function main() {
     const resp = await client.embedding({
-        input: [ 'Introduce the city Beijing'],
-    }, "Embedding-V1");
+        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+    });
+    const data = resp.data[0] as any;
+    console.log(data.embedding);
 }
 
 main();
 ```
 
-### 图像
+```bash
+[0.06814255565404892,  0.007878394797444344,  0.060368239879608154, ...]
+[0.13463851809501648,  -0.010635783895850182,   0.024348173290491104, ...]
+```
+#### Specify Pre-trained Model
+Embedding-V1
 
-#### 文生图
 
-根据用户输入的文本生成图片。
-
-模型支持列表
-    Stable-Diffusion-XL
+Embedding-V1
 
 ```ts
-// node环境
-import * as http from 'http';
-import {Text2Image} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Text2Image();
-// 手动传 AK/SK 测试
-// const client = new Text2Image({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
 
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Text2Image} from "@baiducloud/qianfan";
-const client = Text2Image({QIANFAN_BASE_URL: '***', QIANFAN_CONSOLE_API_BASE_URL: '***'});
+import {Eembedding} from "@baiducloud/qianfan";
+
+const client = new Eembedding({ QIANFAN_ACCESS_KEY: '***', QIANFAN_SECRET_KEY: '***' });
+async function main() {
+    const resp = await client.embedding({
+        input: ['介绍下你自己吧', '你有什么爱好吗？'],
+    }, 'Embedding-V1');
+    const data = resp.data[0] as any;
+    console.log(data.embedding);
+}
+
+main();
+```
+
+```bash
+[0.13463850319385529,  -0.010635782964527607,   0.024348171427845955...]
+```
+### Images
+
+#### image generating from text
+
+
+```ts
+import * as http from 'http';
+import {Text2Image, setEnvVariable} from "@baiducloud/qianfan";
+const client = new Text2Image({Endpoint：'***'});
 
 async function main() {
     const resp = await client.text2Image({
-        prompt: '生成爱莎公主的图片',
-        size: '768x768',
-        n: 1,
-        steps: 20,
-        sampler_index: 'Euler a',
-    }, 'Stable-Diffusion-XL');
+        prompt: 'A Ragdoll cat with a bowtie.',
+    });
 
     const base64Image = resp.data[0].b64_image;
-    // 注意 base64Image没有带ata:image/jpeg;base64 前缀，要直接使用的话，需要加上
     // 创建一个简单的服务器
     const server = http.createServer((req, res) => {
         res.writeHead(200, {'Content-Type': 'text/html'});
         let html = `<html><body><img src="data:image/jpeg;base64,${base64Image}" /><br/></body></html>`;
         res.end(html);
     });
-    const port = 3001;
+
+    const port = 3002;
     server.listen(port, () => {
         console.log(`服务器运行在 http://localhost:${port}`);
     });
@@ -253,74 +493,53 @@ async function main() {
 main();
 ```
 
-#### 图生文
-
-多模态图像理解模型，可以支持多样的图像分辨率，回答图形图表有关问题
-注意事项：调用本文API，推荐使用安全认证AK/SK鉴权，调用流程及鉴权介绍详见SDK安装及使用流程
-
+#### text generating from image
+##### Pre-trained Model Fuyu-8B
 ```ts
-// node 环境
+import {setEnvVariable} from '@baiducloud/qianfan'
 import {Image2Text} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Image2Text({Endpoint: '***'});
 
-// 手动传 AK/SK 测试
-// const client = new Image2Text({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Image2Text} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
-async function main() {
-    const resp = await client.image2Text({
-        prompt: '分析一下图片画了什么',
-        image: '图片的base64编码',
-    });
-}
-
-main();
-
-```
-
-```ts
-// node环境
-import {Image2Text} from "@baiducloud/qianfan";
-// 直接读取 env 
-// 使用预置服务Fuyu-8B
+// 调用大模型
 const client = new Image2Text();
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Image2Text} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
-
-// 手动传 AK/SK 测试
-// const client = new Image2Text({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
 async function main() {
     const resp = await client.image2Text({
         prompt: '分析一下图片画了什么',
-        image: '图片的base64编码',
+        image: 'iVBORw0KGgoAAAANSUhEUgAAB4IAAxxxxxxxxxxxx=',  //  请替换图片的base64编码
     });
+    console.log(resp.result)
 }
 
 main();
-
 ```
 
-### Plugin 插件
-
-SDK支持使用平台插件能力，以帮助用户快速构建 LLM 应用或将 LLM 应用到自建程序中。支持知识库、智慧图问、天气等插件。
-
-#### 千帆插件
+##### User-defined Custom Model
 
 ```ts
-// node环境
+import {setEnvVariable} from '@baiducloud/qianfan'
+import {Image2Text} from "@baiducloud/qianfan";
+
+// 调用大模型
+const client = new Image2Text({Endpoint: '***'});
+async function main() {
+    const resp = await client.image2Text({
+        prompt: '分析一下图片画了什么',
+        image: 'iVBORw0KGgoAAAANSUhEUgAAB4IAAxxxxxxxxxxxx=',  //  请替换图片的base64编码
+    });
+    console.log(resp.result)
+}
+
+main();
+```
+
+### Plugin
+
+#### qianfan pluggin
+
+The SDK supports platform plugin capabilities to help users quickly build LLM applications or integrate LLM into their own programs. It supports plugins such as knowledge base, smart graph Q&A, weather, and more.
+```ts
 import {Plugin} from "@baiducloud/qianfan";
 // 注意：千帆插件需要传入Endpoint， 一言插件不用
 const client = new Plugin({Endpoint: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Plugin} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
 // 天气插件
 async function main() {
@@ -365,51 +584,20 @@ main();
 
 // zhishikuMain();
 ```
+#### yiyan pluggin API-V2
 
-参数传入 stream 为 `true` 时，返回流式结果
+Sure, here's a brief overview of each component:
 
-```ts
-// node环境
-import {Plugin} from "@baiducloud/qianfan";
-// 直接读取 env  
-const client = new Plugin();
+**ImageAI:**
+ImageAI enables text creation and answering questions based on images. It assists in writing copy, generating stories, and creating visual content. It currently supports images up to 10MB in size.
 
-// 手动传 AK/SK 测试
-// const client = new Plugins({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
+**ChatFile:**
+Formerly known as ChatFile, it allows tasks such as summarizing, Q&A, and content creation based on documents. It supports documents up to 10MB in size but does not support scanned documents.
 
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Plugin} from "@baiducloud/qianfan";
-const client = Image2Text({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
+**eChart:**
+eChart uses Apache Echarts to provide data insights and create various types of charts, including bar charts, line charts, pie charts, radar charts, scatter plots, funnel charts, and mind maps (tree charts).
 
-async function main() {
-    const stream = await client.plugins({
-        query: '深圳今天天气如何',
-        /** 
-         *  插件名称
-         * 知识库插件固定值为["uuid-zhishiku"] 
-         * 智慧图问插件固定值为["uuid-chatocr"]
-         * 天气插件固定值为["uuid-weatherforecast"]
-         */ 
-        plugins: [
-            'uuid-weatherforecast',
-        ],
-        stream: true,
-    });
-    for await (const chunk of stream as AsyncIterableIterator<any>) {
-        // 返回结果
-    }
-}
 
-main();
-```
-
-#### 一言插件 API-V2
-
-* 说图解画（ImageAI）：基于图片进行文字创作、回答问题，帮你写文案、想故事、图生图。暂仅支持10MB以内的图片。
-* 览卷文档（ChatFile）：原ChatFile，可基于文档完成摘要、问答、创作等任务，仅支持10MB以内文档，不支持扫描件。
-* E言易图（eChart）：基于Apache Echarts为您提供数据洞察和图表制作，目前支持柱状图、折线图、饼图、雷达图、散点图、漏斗图、思维导图（树图）。
-
-eChart插件
 
 ```ts
 // eChart插件
@@ -442,7 +630,7 @@ async function yiYanImageAIMain() {
 
 yiYanImageAIMain()
 
-// ChatFile测试
+// ChatFiletesting
 async function yiYanChatFileMain() {
     const resp = await client.plugins({
         messages: [
@@ -456,23 +644,14 @@ async function yiYanChatFileMain() {
 }
 yiYanChatFileMain();
 ```
+### Reranker 
 
-### Reranker 重排序
-
-跨语种语义表征算法模型，擅长优化语义搜索结果和语义相关顺序精排，支持中英日韩四门语言。
+Cross-lingual semantic representation algorithm models specialize in optimizing semantic search results and precise semantic relevance ranking. They support four languages: Chinese, English, Japanese, and Korean.
 
 ```ts
-// node环境
 import {Reranker} from "@baiducloud/qianfan";
 // 直接读取 env  
 const client = new Reranker();
-
-// 手动传 AK/SK
-// const client = new Reranker({ QIANFAN_AK: '***', QIANFAN_SK: '***'});
-
-// 浏览器环境，必须传入QIANFAN_BASE_URL，（proxy启动后地址）， QIANFAN_CONSOLE_API_BASE_URL不传时，只能使用预置模型，传入后可以使用动态模型
-import {Reranker} from "@baiducloud/qianfan";
-const client = Reranker({QIANFAN_BASE_URL: 'http://172.18.184.85:8002', QIANFAN_CONSOLE_API_BASE_URL: 'http://172.18.184.85:8003'});
 
 async function main() {
      const resp = await client.reranker({
@@ -482,42 +661,7 @@ async function main() {
 }
 
 main();
+
 ```
 
-### HTML 中使用, 引入 dist 文件中的 bundle.iife.js 即可使用，参考example/index.html
 
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Qianfan SDK</h1>
-    <script src="../dist/bundle.iife.js"></script>
-    <script>
-        const {ChatCompletion} = QianfanSDK;
-        const client =  new ChatCompletion({QIANFAN_BASE_URL: 'http://172.18.178.105:8002', QIANFAN_CONSOLE_API_BASE_URL: ' http://172.18.178.105:8003'})
-     async function main() {
-    const stream =  await client.chat({
-        messages: [
-            {
-                role: 'user',
-                content: '等额本金和等额本息有什么区别？',
-            },
-        ],
-        stream: true,
-    }, 'ERNIE-Bot-turbo');
-    console.log('流式返回结果');
-    for await (const chunk of stream) {
-        console.log(chunk);
-    }
-}
-
-main();
-    </script>
-</body>
-</html>
-```
